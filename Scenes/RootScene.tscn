@@ -1,0 +1,48 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Sprites/Star01.png" type="Texture" id=2]
+[ext_resource path="res://Scripts/BackgroundManager.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Sprites/Star02.png" type="Texture" id=5]
+[ext_resource path="res://Scripts/GameManager.gd" type="Script" id=6]
+[ext_resource path="res://Scripts/AsteroidSpawner.gd" type="Script" id=7]
+[ext_resource path="res://Sprites/Asteroid03.png" type="Texture" id=8]
+[ext_resource path="res://Sprites/Asteroid04.png" type="Texture" id=9]
+[ext_resource path="res://Sprites/Asteroid01.png" type="Texture" id=10]
+[ext_resource path="res://Sprites/Asteroid02.png" type="Texture" id=11]
+
+[node name="Root" type="Node2D"]
+script = ExtResource( 6 )
+starTexture = ExtResource( 5 )
+DisplayColumns = true
+
+[node name="Player" parent="." instance=ExtResource( 4 )]
+position = Vector2( 225, 0 )
+z_index = 2
+TimeToMove = 0.02
+ForwardSpeed = 16.0
+DistanceScalar = 4.0
+
+[node name="BackgroundParent" type="Node" parent="."]
+script = ExtResource( 3 )
+buffer = 150.0
+StarSpeed = 75.0
+InitialStarCount = 125
+StarList = [ ExtResource( 2 ), ExtResource( 5 ) ]
+StarScaleBounds = Vector2( 1, 7 )
+StarDelay = Vector2( 0.2, 0.5 )
+MaxStarsPerCluster = 1
+
+[node name="AsteroidSpawner" type="Node" parent="."]
+script = ExtResource( 7 )
+AsteroidTextures = [ ExtResource( 10 ), ExtResource( 11 ), ExtResource( 8 ), ExtResource( 9 ) ]
+AsteroidColors = [ Color( 0.223529, 0.223529, 0.223529, 1 ), Color( 0.305882, 0.305882, 0.305882, 1 ), Color( 0.129412, 0.12549, 0.12549, 1 ), Color( 0.866667, 0.866667, 0.866667, 1 ), Color( 0.956863, 0.956863, 0.956863, 1 ), Color( 0.741176, 0.741176, 0.741176, 1 ) ]
+AsteroidDelay = Vector2( 1, 5 )
+AsteroidSpeed = Vector2( 200, 400 )
+
+[node name="Star" type="Sprite" parent="."]
+position = Vector2( 296, -816 )
+scale = Vector2( 10, 10 )
+texture = ExtResource( 5 )
+
+[connection signal="area_entered" from="Player" to="Player" method="_on_Player_area_entered"]
