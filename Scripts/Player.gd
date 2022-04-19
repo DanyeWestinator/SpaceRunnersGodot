@@ -11,7 +11,7 @@ var screensize
 var columns
 var currentColumn = 3
 var nextColumn
-
+export (bool) var UpButtonSpeedUp = true
 export (float) var ForwardSpeed = 2
 export (float) var DistanceScalar = 1
 var distanceTravelled = 0
@@ -33,10 +33,11 @@ func _ready():
 	
 	#Colors the ship, turns on thrust anim
 	$SpaceshipSprite.modulate = ShipColor
-	$ThrustAnimation.show()
-	$ThrustAnimation.play()
+	
+	#$ThrustAnimation.show()
+	#$ThrustAnimation.play()
 	position.x = columns[3]
-	position.y = 0
+	#position.y = 0
 	
 	nextColumn = currentColumn
 	
@@ -54,9 +55,15 @@ func _process(delta):
 	if Input.is_action_just_pressed("move_right") and nextColumn < columns.size():
 		nextColumn += 1
 	if (Input.is_action_just_pressed("move_up")):
-		position.y -= 50
+		if (UpButtonSpeedUp):
+			UpdateSpeed(2)
+		else:
+			position.y -= 50
 	if (Input.is_action_just_pressed("move_down")):
-		position.y += 50
+		if (UpButtonSpeedUp):
+			UpdateSpeed(0.5)
+		else:
+			position.y += 50
 	
 	#calls the movement logic
 	move(delta)
@@ -90,6 +97,10 @@ func move(delta) -> void:
 	distanceTravelled += (ForwardSpeed * delta)
 	position.y += (ForwardSpeed * delta)
 	$Labels/Temp.text = str(position)
+func UpdateSpeed(delta):
+	ForwardSpeed *= delta
+	$"./ThrustParticles/ThrustParticlesLeft".amount *= delta
+	$"./ThrustParticles/ThrustParticlesRight".amount *= delta
 	
 func UpdateLabels():
 	#updates the speed and distance travelled labels
@@ -103,3 +114,13 @@ func UpdateLabels():
 
 func _on_Player_area_entered(area):
 	print("Hit the spaceship!")
+	Die()
+
+func Die():
+	$SpaceshipSprite.visible = false
+	$ThrustParticles.visible = false
+	$DeathParticleExplosion.emitting = true
+	$YouDied.visible = true
+	get_node("../AsteroidSpawner").SpawnAsteroids = false
+	
+	ForwardSpeed = 0

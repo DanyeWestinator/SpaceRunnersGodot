@@ -17,10 +17,10 @@ starTexture = ExtResource( 5 )
 DisplayColumns = true
 
 [node name="Player" parent="." instance=ExtResource( 4 )]
-position = Vector2( 225, 0 )
+position = Vector2( 238, -175 )
 z_index = 2
 TimeToMove = 0.02
-ForwardSpeed = 16.0
+ForwardSpeed = 128.0
 DistanceScalar = 4.0
 
 [node name="BackgroundParent" type="Node" parent="."]
@@ -31,18 +31,13 @@ InitialStarCount = 125
 StarList = [ ExtResource( 2 ), ExtResource( 5 ) ]
 StarScaleBounds = Vector2( 1, 7 )
 StarDelay = Vector2( 0.2, 0.5 )
-MaxStarsPerCluster = 1
+MaxStarsPerCluster = 2
 
 [node name="AsteroidSpawner" type="Node" parent="."]
 script = ExtResource( 7 )
 AsteroidTextures = [ ExtResource( 10 ), ExtResource( 11 ), ExtResource( 8 ), ExtResource( 9 ) ]
 AsteroidColors = [ Color( 0.223529, 0.223529, 0.223529, 1 ), Color( 0.305882, 0.305882, 0.305882, 1 ), Color( 0.129412, 0.12549, 0.12549, 1 ), Color( 0.866667, 0.866667, 0.866667, 1 ), Color( 0.956863, 0.956863, 0.956863, 1 ), Color( 0.741176, 0.741176, 0.741176, 1 ) ]
-AsteroidDelay = Vector2( 1, 5 )
-AsteroidSpeed = Vector2( 200, 400 )
-
-[node name="Star" type="Sprite" parent="."]
-position = Vector2( 296, -816 )
-scale = Vector2( 10, 10 )
-texture = ExtResource( 5 )
+AsteroidDelay = Vector2( 0.5, 3 )
+AsteroidSpeed = 10.0
 
 [connection signal="area_entered" from="Player" to="Player" method="_on_Player_area_entered"]

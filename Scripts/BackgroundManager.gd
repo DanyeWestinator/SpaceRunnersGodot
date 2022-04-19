@@ -19,6 +19,7 @@ var gm
 func _ready():
 	gm = get_node("..")
 	screensize = gm.screensize
+	buffer = (screensize.x / 2) - gm.columns[1]
 	
 	random.randomize()
 	MaxTime = random.randf_range(StarDelay.x, StarDelay.y)

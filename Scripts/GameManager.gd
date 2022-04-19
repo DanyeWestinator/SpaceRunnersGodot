@@ -36,7 +36,7 @@ func _ready():
 			star.name = "Star" + str(column) + "-"+ str(star.position)#star.position
 			add_child(star)
 			
-	$Star.position = Vector2(columns[3], $Player.position.y - screensize.y)
+	#$Star.position = Vector2(columns[3], $Player.position.y - screensize.y)
 	loaded = true
 
 
