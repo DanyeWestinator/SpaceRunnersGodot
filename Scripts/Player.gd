@@ -18,9 +18,18 @@ var distanceTravelled = 0
 
 var baseDistanceLabel = ""
 var baseSpeedLabel = ""
+var baseMaxDistanceLabel = ""
 
 var lastPos = position
+var PAUSED = false
 
+export (int) var BoostTextLen = 5
+export (int) var BoostScale = 4
+export (float) var BoostTime = 1
+export (float) var BoostCooldown = 2
+export (String) var BoostChar = ">"
+var currentBoostTime = 0
+var isBoosting = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -43,35 +52,52 @@ func _ready():
 	
 	baseDistanceLabel = $Labels/DistanceLabel.text
 	baseSpeedLabel = $Labels/SpeedLabel.text
+	baseMaxDistanceLabel = $DeathLabels/MaxDistance.text
 
 	lastPos = position
+	
+
+	
 	
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Input.is_action_just_pressed("move_left") and nextColumn > 1:
-		nextColumn -= 1
-	if Input.is_action_just_pressed("move_right") and nextColumn < columns.size():
-		nextColumn += 1
-	if (Input.is_action_just_pressed("move_up")):
-		if (UpButtonSpeedUp):
-			UpdateSpeed(2)
-		else:
-			position.y -= 50
-	if (Input.is_action_just_pressed("move_down")):
-		if (UpButtonSpeedUp):
-			UpdateSpeed(0.5)
-		else:
-			position.y += 50
-	
+	if (PAUSED == false):
+		if Input.is_action_just_pressed("move_left") and nextColumn > 1:
+			nextColumn -= 1
+		if Input.is_action_just_pressed("move_right") and nextColumn < columns.size():
+			nextColumn += 1
+		if (Input.is_action_just_pressed("move_up") and isBoosting == false):
+			UpdateSpeed(BoostScale)
+			isBoosting = true
+		if (Input.is_action_just_pressed("move_down") and false):
+			if (UpButtonSpeedUp):
+				UpdateSpeed(0.5)
+			else:
+				position.y += 50
+		if Input.is_action_just_pressed("ui_cancel"):
+			PAUSED = true
+	elif (PAUSED == true):
+		if Input.is_action_just_pressed("ui_cancel"):
+			PAUSED = false
+
+	BoostLogic(delta)
 	#calls the movement logic
 	move(delta)
 	#updates GUI
 	UpdateLabels()
 	
 	lastPos = position
-
+func BoostLogic(delta):
+	if isBoosting:
+		currentBoostTime += delta
+	if currentBoostTime >= BoostTime:
+		isBoosting = false
+		currentBoostTime = 0
+		UpdateSpeed((1.0 / BoostScale)) 
+	
+	
 func move(delta) -> void:
 	
 	#every frame, decreases y by Speed * delta
@@ -109,7 +135,15 @@ func UpdateLabels():
 	$Labels/DistanceLabel.text = distanceText
 	var speedText = baseSpeedLabel.replace("0", str(ForwardSpeed))
 	$Labels/SpeedLabel.text = speedText
-	$Labels/Temp.text = "(" + str(int(global_position.x)) + ", " + str(int(global_position.y)) + ")"
+	var boostsString = "Boost: "
+	if isBoosting == false:
+		for i in range(BoostTextLen):
+			boostsString += BoostChar
+	else:
+		for i in range(int(BoostTextLen * (float(currentBoostTime) / BoostTime))):
+			boostsString += BoostChar
+	$Labels/BoostsLeft.text = boostsString
+	#$Labels/Temp.text = "(" + str(int(global_position.x)) + ", " + str(int(global_position.y)) + ")"
 
 
 func _on_Player_area_entered(area):
@@ -120,7 +154,16 @@ func Die():
 	$SpaceshipSprite.visible = false
 	$ThrustParticles.visible = false
 	$DeathParticleExplosion.emitting = true
-	$YouDied.visible = true
+	$DeathLabels.visible = true
+	var maxDistance = gm.gamedata["maxDistance"]
+	if distanceTravelled > maxDistance:
+		gm.gamedata["maxDistance"] = distanceTravelled
+		gm.UpdateGameData()
+	var distanceText = baseMaxDistanceLabel
+	distanceText = distanceText.replace("DIST", str(int(distanceTravelled)))
+	distanceText = distanceText.replace("MAX", str(int(maxDistance)))
+	$DeathLabels/MaxDistance.text = distanceText
 	get_node("../AsteroidSpawner").SpawnAsteroids = false
+	$Labels.visible = false
 	
 	ForwardSpeed = 0

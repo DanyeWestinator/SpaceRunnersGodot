@@ -48,6 +48,15 @@ func CreateStar(x, y):
 	CurrentStars.append(star)
 	
 
+func reset():
+	for i in range(StarList.size()):
+		var star = StarList[i]
+		StarList[i] = null
+		star.queue_free()
+	StarList = []
+	self._ready()
+	
+		
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

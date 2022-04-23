@@ -17,15 +17,25 @@ export (bool) var SpawnAsteroids = true
 
 var currentTime = 0
 var maxTime
+var lastPos
+var player
 
+func reset():
+	for i in range(Asteroids.size()):
+		var asteroid = Asteroids[i]
+		Asteroids[i] = null
+		asteroid.queue_free()
+	Asteroids = []
 
 
 func _ready():
 	maxTime = random.randf_range(AsteroidDelay.x, AsteroidDelay.y)
 	screensize = null
+	player = $"../Player"
+	lastPos = player.position
+	
 
 func SpawnAsteroid():
-	print("Spawned Asteroid")
 	#initializes the asteroid
 	var asteroid = AsteroidPrefab.instance()
 	#error check for screensize existing
@@ -50,7 +60,10 @@ func SpawnAsteroid():
 	
 	add_child(asteroid)
 	Asteroids.append(asteroid)
-	
+
+func Serialize():
+	pass
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -59,4 +72,5 @@ func _process(delta):
 		currentTime = 0
 		maxTime = random.randf_range(AsteroidDelay.x, AsteroidDelay.y)
 		SpawnAsteroid()
-
+	
+	lastPos = player.position

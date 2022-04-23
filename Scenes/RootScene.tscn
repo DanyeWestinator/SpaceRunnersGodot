@@ -15,13 +15,15 @@
 script = ExtResource( 6 )
 starTexture = ExtResource( 5 )
 DisplayColumns = true
+gameDataPath = "res://GameData/gamedata.txt"
 
 [node name="Player" parent="." instance=ExtResource( 4 )]
 position = Vector2( 238, -175 )
 z_index = 2
 TimeToMove = 0.02
 ForwardSpeed = 128.0
-DistanceScalar = 4.0
+DistanceScalar = 8.0
+BoostCooldown = 5.0
 
 [node name="BackgroundParent" type="Node" parent="."]
 script = ExtResource( 3 )
