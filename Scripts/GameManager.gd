@@ -2,6 +2,8 @@ extends Node2D
 enum States {
 	Play,
 	Pause,
+	MainMenu,
+	Dead
 }
 
 var screensize
@@ -48,28 +50,53 @@ func _ready():
 	#$Star.position = Vector2(columns[3], $Player.position.y - screensize.y)
 	loaded = true
 	ParseGameData()
+	
 func ParseGameData():
+	
 	var f = File.new()
+	if f.file_exists(gameDataPath.replace("user", "res")) and f.file_exists(gameDataPath) == false:
+		var temp = File.new()
+		temp.open(gameDataPath, File.WRITE)
+		var lines = ""
+		f.open(gameDataPath.replace("user", "res"), File.READ)
+		#gets the default values
+		while not f.eof_reached():
+			lines += f.get_line()
+		#close it, then open a new one to edit
+		temp.store_string(lines)
+		print("Wrote base values to new entry")
+		f.close()
+		f = File.new()
+		temp.close()
+	
 	f.open(gameDataPath, File.READ)
 	while not f.eof_reached():
-		var line = f.get_line().split(":")
+		var line = f.get_line()
+		if line == "":
+			continue
+		line = line.split(":")
 		gamedata[line[0]] = float(line[1])
 		#parse file here
 		
 	f.close()
 	
 	pass
+func _on_Start_Button_released():
+	currentState = States.Play
+	reset()
+	
 func UpdateGameData():
 	var file = ""
 	for item in gamedata.keys():
-		file += item + ":" + str(gamedata[item])
+		file += item + ":" + str(gamedata[item]) + "\n"
 	var f = File.new()
 	f.open(gameDataPath, File.WRITE)
+	print(gameDataPath)
 	f.store_string(file)
 	f.close()
 	
 func reset():
-	$Player.position = Vector2.ZERO
+	$Player.reset()
 	$AsteroidSpawner.reset()
 	$BackgroundParent.reset()
 
@@ -78,3 +105,8 @@ func _process(delta):
 
 	return
 
+
+
+func _on_Restart_pressed():
+	currentState = States.Play
+	reset()

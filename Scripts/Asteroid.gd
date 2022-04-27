@@ -4,6 +4,7 @@ var RotateSpeed
 var MoveSpeed
 
 var y_bound
+onready var gm = get_tree().root.get_child(0)
 
 
 # Declare member variables here. Examples:
@@ -18,10 +19,11 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if (position.y > y_bound + 10):
-		get_node("..").Asteroids.erase(self)
-		self.queue_free()
-	
-	position.y += (MoveSpeed * delta)
-	rotation_degrees += (RotateSpeed * delta)
+	if gm.currentState == gm.States.Play:
+		if (position.y > y_bound + 10):
+			get_node("..").Asteroids.erase(self)
+			self.queue_free()
+		
+		position.y += (MoveSpeed * delta)
+		rotation_degrees += (RotateSpeed * delta)
 	

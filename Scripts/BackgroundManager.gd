@@ -26,7 +26,7 @@ func _ready():
 	currentTime = MaxTime
 	for i in InitialStarCount:
 		var x = random.randf_range(-1 * buffer, screensize.x + buffer)
-		var y = random.randf_range((-1 * screensize.y) - buffer, buffer)
+		var y = random.randf_range((-1 * buffer), screensize.y)
 		CreateStar(x, y)
 
 		
@@ -49,11 +49,13 @@ func CreateStar(x, y):
 	
 
 func reset():
-	for i in range(StarList.size()):
-		var star = StarList[i]
-		StarList[i] = null
+	
+	for i in range(CurrentStars.size()):
+		var star = CurrentStars[i]
+		#print(star)
+		CurrentStars[i] = null
 		star.queue_free()
-	StarList = []
+	CurrentStars = []
 	self._ready()
 	
 		

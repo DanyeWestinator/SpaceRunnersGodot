@@ -14,6 +14,8 @@ var Asteroids = []
 var random = RandomNumberGenerator.new()
 export (bool) var SpawnAsteroids = true
 
+onready var gm = get_tree().root.get_child(0)
+
 
 var currentTime = 0
 var maxTime
@@ -67,10 +69,11 @@ func Serialize():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	currentTime += delta
-	if (currentTime > maxTime and SpawnAsteroids == true):
-		currentTime = 0
-		maxTime = random.randf_range(AsteroidDelay.x, AsteroidDelay.y)
-		SpawnAsteroid()
+	if gm.currentState == gm.States.Play:
+		currentTime += delta
+		if (currentTime > maxTime and SpawnAsteroids == true):
+			currentTime = 0
+			maxTime = random.randf_range(AsteroidDelay.x, AsteroidDelay.y)
+			SpawnAsteroid()
 	
 	lastPos = player.position

@@ -1,5 +1,6 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=21 format=2]
 
+[ext_resource path="res://Fonts/dogicapixelbold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Sprites/Star01.png" type="Texture" id=2]
 [ext_resource path="res://Scripts/BackgroundManager.gd" type="Script" id=3]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=4]
@@ -10,20 +11,216 @@
 [ext_resource path="res://Sprites/Asteroid04.png" type="Texture" id=9]
 [ext_resource path="res://Sprites/Asteroid01.png" type="Texture" id=10]
 [ext_resource path="res://Sprites/Asteroid02.png" type="Texture" id=11]
+[ext_resource path="res://Scripts/UIManager.gd" type="Script" id=12]
+[ext_resource path="res://Sprites/starting.png" type="Texture" id=13]
+[ext_resource path="res://Sprites/Start.png" type="Texture" id=14]
+[ext_resource path="res://Sprites/Spaceship02.png" type="Texture" id=15]
+[ext_resource path="res://Sprites/Arrow.png" type="Texture" id=16]
+
+[sub_resource type="DynamicFont" id=6]
+font_data = ExtResource( 1 )
+
+[sub_resource type="StreamTexture" id=8]
+load_path = "res://.import/Spaceship02.png-6791c0a753fb5a88eeb929ab4e1b0e59.stex"
+
+[sub_resource type="CircleShape2D" id=9]
+radius = 16.0
+
+[sub_resource type="CircleShape2D" id=7]
+radius = 151.0
 
 [node name="Root" type="Node2D"]
 script = ExtResource( 6 )
 starTexture = ExtResource( 5 )
 DisplayColumns = true
-gameDataPath = "res://GameData/gamedata.txt"
+gameDataPath = "user://base_gamedata.txt"
+currentState = 2
 
 [node name="Player" parent="." instance=ExtResource( 4 )]
-position = Vector2( 238, -175 )
+position = Vector2( 235, 891 )
 z_index = 2
 TimeToMove = 0.02
 ForwardSpeed = 128.0
 DistanceScalar = 8.0
 BoostCooldown = 5.0
+
+[node name="UIManager" type="Node2D" parent="Player"]
+position = Vector2( -21, -22.25 )
+scale = Vector2( 0.125, 0.125 )
+script = ExtResource( 12 )
+
+[node name="IngameGUI" type="Node2D" parent="Player/UIManager"]
+visible = false
+position = Vector2( -23, -527 )
+
+[node name="DistanceLabel" type="Label" parent="Player/UIManager/IngameGUI"]
+margin_left = -21.0
+margin_top = -162.0
+margin_right = 313.0
+margin_bottom = -120.0
+custom_fonts/font = SubResource( 6 )
+text = "Distance:
+----------
+0Km"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BoostsLeft" type="Label" parent="Player/UIManager/IngameGUI"]
+margin_left = -26.0
+margin_top = -28.0
+margin_right = 308.0
+margin_bottom = 29.0
+custom_fonts/font = SubResource( 6 )
+text = ">>>>>"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpeedLabel" type="Label" parent="Player/UIManager/IngameGUI"]
+margin_left = -26.0
+margin_top = -100.75
+margin_right = 308.0
+margin_bottom = -43.75
+custom_fonts/font = SubResource( 6 )
+text = "----------
+Speed:
+----------
+0Km/s"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Left" type="TouchScreenButton" parent="Player/UIManager/IngameGUI"]
+position = Vector2( 27, 675 )
+rotation = -1.5708
+scale = Vector2( 3, 3 )
+normal = SubResource( 8 )
+pressed = ExtResource( 15 )
+shape = SubResource( 9 )
+
+[node name="Right" type="TouchScreenButton" parent="Player/UIManager/IngameGUI"]
+position = Vector2( 354, 628 )
+rotation = 1.5708
+scale = Vector2( 3, 3 )
+normal = SubResource( 8 )
+pressed = ExtResource( 15 )
+shape = SubResource( 9 )
+
+[node name="Boost" type="TouchScreenButton" parent="Player/UIManager/IngameGUI"]
+position = Vector2( 237, 648 )
+rotation = 1.5708
+scale = Vector2( 3, 3 )
+shape = SubResource( 9 )
+
+[node name="MainMenuGUI" type="Node2D" parent="Player/UIManager"]
+visible = false
+position = Vector2( 73, -395 )
+
+[node name="Title" type="Label" parent="Player/UIManager/MainMenuGUI"]
+modulate = Color( 0, 0.329412, 1, 1 )
+margin_left = -120.0
+margin_top = -64.0
+margin_right = 214.0
+margin_bottom = -22.0
+rect_scale = Vector2( 2, 3 )
+custom_fonts/font = SubResource( 6 )
+text = "Space Runners!"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Subtitle" type="Label" parent="Player/UIManager/MainMenuGUI"]
+modulate = Color( 0, 0, 1, 1 )
+margin_left = -166.0
+margin_top = 51.0
+margin_right = 168.0
+margin_bottom = 93.0
+rect_scale = Vector2( 1.5, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "Race
+
+To
+
+Infinity"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Test" type="Label" parent="Player/UIManager/MainMenuGUI"]
+visible = false
+modulate = Color( 1, 0, 0, 1 )
+margin_left = -165.0
+margin_top = 343.0
+margin_right = 169.0
+margin_bottom = 415.0
+rect_scale = Vector2( 1.5, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "STARTING"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Start Button" type="TouchScreenButton" parent="Player/UIManager/MainMenuGUI"]
+position = Vector2( 4, 222 )
+scale = Vector2( 0.4, 0.4 )
+normal = ExtResource( 14 )
+pressed = ExtResource( 13 )
+shape = SubResource( 7 )
+
+[node name="Button" type="Button" parent="Player/UIManager/MainMenuGUI"]
+visible = false
+modulate = Color( 1, 0, 0, 1 )
+margin_left = 37.0
+margin_top = 233.0
+margin_right = 134.0
+margin_bottom = 253.0
+action_mode = 0
+text = "Press to Start"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DeathGUI" type="Node2D" parent="Player/UIManager"]
+visible = false
+
+[node name="YouDied" type="Label" parent="Player/UIManager/DeathGUI"]
+modulate = Color( 1, 0, 0, 1 )
+margin_left = -39.0
+margin_top = -391.0
+margin_right = 295.0
+margin_bottom = -349.0
+rect_scale = Vector2( 3, 3 )
+custom_fonts/font = SubResource( 6 )
+text = "YOU DIED!
+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MaxDistance" type="Label" parent="Player/UIManager/DeathGUI"]
+margin_left = -6.0
+margin_top = -256.0
+margin_right = 328.0
+margin_bottom = -199.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "Distance: DISTkm
+
+
+Best: MAXkm"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Restart" type="TouchScreenButton" parent="Player/UIManager/DeathGUI"]
+position = Vector2( 108, -78 )
+scale = Vector2( 3, 3 )
+normal = ExtResource( 16 )
+pressed = ExtResource( 16 )
+shape = SubResource( 9 )
 
 [node name="BackgroundParent" type="Node" parent="."]
 script = ExtResource( 3 )
@@ -43,3 +240,8 @@ AsteroidDelay = Vector2( 0.5, 3 )
 AsteroidSpeed = 10.0
 
 [connection signal="area_entered" from="Player" to="Player" method="_on_Player_area_entered"]
+[connection signal="pressed" from="Player/UIManager/IngameGUI/Left" to="Player" method="_on_Left_pressed"]
+[connection signal="pressed" from="Player/UIManager/IngameGUI/Right" to="Player" method="_on_Right_pressed"]
+[connection signal="pressed" from="Player/UIManager/IngameGUI/Boost" to="Player" method="_on_Boost_pressed"]
+[connection signal="released" from="Player/UIManager/MainMenuGUI/Start Button" to="." method="_on_Start_Button_released"]
+[connection signal="pressed" from="Player/UIManager/DeathGUI/Restart" to="." method="_on_Restart_pressed"]

@@ -21,6 +21,8 @@ var baseSpeedLabel = ""
 var baseMaxDistanceLabel = ""
 
 var lastPos = position
+var startPlayerPos = Vector2.ZERO
+var startVelocity
 var PAUSED = false
 
 export (int) var BoostTextLen = 5
@@ -55,7 +57,8 @@ func _ready():
 	baseMaxDistanceLabel = $DeathLabels/MaxDistance.text
 
 	lastPos = position
-	
+	startPlayerPos = position
+	startVelocity = ForwardSpeed
 
 	
 	
@@ -64,13 +67,16 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if (PAUSED == false):
-		if Input.is_action_just_pressed("move_left") and nextColumn > 1:
-			nextColumn -= 1
-		if Input.is_action_just_pressed("move_right") and nextColumn < columns.size():
-			nextColumn += 1
-		if (Input.is_action_just_pressed("move_up") and isBoosting == false):
-			UpdateSpeed(BoostScale)
-			isBoosting = true
+		if Input.is_action_just_pressed("move_left"):
+			_on_Left_pressed()
+			#nextColumn -= 1
+		if Input.is_action_just_pressed("move_right"):
+			_on_Right_pressed()
+			#nextColumn += 1
+		if Input.is_action_just_pressed("move_up"):
+			_on_Boost_pressed()
+			#UpdateSpeed(BoostScale)
+			#isBoosting = true
 		if (Input.is_action_just_pressed("move_down") and false):
 			if (UpButtonSpeedUp):
 				UpdateSpeed(0.5)
@@ -129,6 +135,7 @@ func UpdateSpeed(delta):
 	$"./ThrustParticles/ThrustParticlesRight".amount *= delta
 	
 func UpdateLabels():
+	
 	#updates the speed and distance travelled labels
 	#also anything else later goes here
 	var distanceText = baseDistanceLabel.replace("0", str(int(distanceTravelled)))
@@ -151,19 +158,40 @@ func _on_Player_area_entered(area):
 	Die()
 
 func Die():
+	gm.currentState = gm.States.Dead
 	$SpaceshipSprite.visible = false
 	$ThrustParticles.visible = false
 	$DeathParticleExplosion.emitting = true
-	$DeathLabels.visible = true
-	var maxDistance = gm.gamedata["maxDistance"]
-	if distanceTravelled > maxDistance:
-		gm.gamedata["maxDistance"] = distanceTravelled
-		gm.UpdateGameData()
-	var distanceText = baseMaxDistanceLabel
-	distanceText = distanceText.replace("DIST", str(int(distanceTravelled)))
-	distanceText = distanceText.replace("MAX", str(int(maxDistance)))
-	$DeathLabels/MaxDistance.text = distanceText
-	get_node("../AsteroidSpawner").SpawnAsteroids = false
-	$Labels.visible = false
 	
-	ForwardSpeed = 0
+	get_node("../AsteroidSpawner").SpawnAsteroids = false
+	
+	
+	#ForwardSpeed = 0
+
+func reset():
+	position = startPlayerPos
+	distanceTravelled = 0.0
+	$SpaceshipSprite.visible = true
+	$ThrustParticles.visible = true
+	ForwardSpeed = startVelocity
+	
+	get_node("../AsteroidSpawner").SpawnAsteroids = true
+
+func _on_Left_pressed():
+	if gm.currentState == gm.States.Play:
+		if nextColumn > 1:
+			nextColumn -= 1
+
+
+func _on_Right_pressed():
+	if gm.currentState == gm.States.Play:
+		if nextColumn < columns.size():
+			nextColumn += 1
+
+
+func _on_Boost_pressed():
+	if gm.currentState == gm.States.Play:
+		if isBoosting == false:
+			UpdateSpeed(BoostScale)
+			isBoosting = true
+	
