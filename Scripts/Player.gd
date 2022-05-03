@@ -33,6 +33,11 @@ export (String) var BoostChar = ">"
 var currentBoostTime = 0
 var isBoosting = false
 
+#Speed increases every so often
+export (float) var timeToSpeedup = 15
+var currentSpeedupTime = 0
+export (float) var speedupScale = 1.1 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#gets the game manager
@@ -95,13 +100,21 @@ func _process(delta):
 	UpdateLabels()
 	
 	lastPos = position
+	
+	currentSpeedupTime += delta
+	#don't speed up if boosting or not playing
+	if currentSpeedupTime >= timeToSpeedup and isBoosting == false and gm.currentState == gm.States.Play:
+		print("speeding up")
+		currentSpeedupTime = 0
+		UpdateSpeed(speedupScale)
+	
 func BoostLogic(delta):
 	if isBoosting:
 		currentBoostTime += delta
 	if currentBoostTime >= BoostTime:
 		isBoosting = false
 		currentBoostTime = 0
-		UpdateSpeed((1.0 / BoostScale)) 
+		UpdateSpeed((1.0 / BoostScale))
 	
 	
 func move(delta) -> void:
@@ -158,15 +171,18 @@ func _on_Player_area_entered(area):
 	Die()
 
 func Die():
+	#Can't die if already dead
+	if (gm.currentState != gm.States.Play):
+		return
 	gm.currentState = gm.States.Dead
 	$SpaceshipSprite.visible = false
 	$ThrustParticles.visible = false
 	$DeathParticleExplosion.emitting = true
 	
-	get_node("../AsteroidSpawner").SpawnAsteroids = false
+	#get_node("../AsteroidSpawner").SpawnAsteroids = false
 	
 	
-	#ForwardSpeed = 0
+	ForwardSpeed = startVelocity
 
 func reset():
 	position = startPlayerPos
@@ -174,19 +190,27 @@ func reset():
 	$SpaceshipSprite.visible = true
 	$ThrustParticles.visible = true
 	ForwardSpeed = startVelocity
-	
 	get_node("../AsteroidSpawner").SpawnAsteroids = true
 
 func _on_Left_pressed():
 	if gm.currentState == gm.States.Play:
 		if nextColumn > 1:
 			nextColumn -= 1
+			#if we move left, make sure the right is visible
+			#$UIManager/IngameGUI/Right.paused = false
+			$UIManager/IngameGUI/Right.visible = true
+		if nextColumn == 1:
+			$UIManager/IngameGUI/Left.visible = false
+			#$UIManager/IngameGUI/Left.paused = true
 
 
 func _on_Right_pressed():
 	if gm.currentState == gm.States.Play:
 		if nextColumn < columns.size():
 			nextColumn += 1
+			$UIManager/IngameGUI/Left.visible = true
+		if nextColumn == columns.size():
+			$UIManager/IngameGUI/Right.visible = false
 
 
 func _on_Boost_pressed():

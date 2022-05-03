@@ -1,6 +1,7 @@
 extends Node
 
 var random = RandomNumberGenerator.new()
+onready var player = get_node("../Player")
 ##How far on either side of the screen to generate new stars
 export (float) var buffer = 75
 export (float) var StarSpeed
@@ -11,6 +12,9 @@ export (Vector2) var StarDelay
 export (int) var MaxStarsPerCluster
 var screensize
 var currentTime = 0
+var currentDelta = 0
+var MaxDelta
+var lastDistance = 0
 var MaxTime
 var CurrentStars = []
 var gm
@@ -23,6 +27,7 @@ func _ready():
 	
 	random.randomize()
 	MaxTime = random.randf_range(StarDelay.x, StarDelay.y)
+	MaxDelta = random.randf_range(StarDelay.x, StarDelay.y)
 	currentTime = MaxTime
 	for i in InitialStarCount:
 		var x = random.randf_range(-1 * buffer, screensize.x + buffer)
@@ -64,11 +69,15 @@ func reset():
 func _process(delta):
 	#add delta to currentTime
 	currentTime += delta
-	var playerPos = get_node("../Player").position
+	var playerPos = player.position
+	currentDelta += player.distanceTravelled - lastDistance
 	#Check if it's time to spawn a new star cluster
-	if (currentTime >= MaxTime):
+	#if (currentTime >= MaxTime):
+	if (currentDelta >= MaxDelta):
 		currentTime = 0
+		currentDelta = 0
 		MaxTime = random.randf_range(StarDelay.x, StarDelay.y)
+		MaxDelta = random.randf_range(StarDelay.x, StarDelay.y)
 		var numStars = random.randi_range(1, MaxStarsPerCluster)
 		
 		#Create n stars
@@ -81,4 +90,5 @@ func _process(delta):
 		if (star.position.y >= playerPos.y + buffer):
 			CurrentStars.erase(star)
 			star.queue_free()
+	lastDistance = player.distanceTravelled
 

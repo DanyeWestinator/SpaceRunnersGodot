@@ -24,7 +24,7 @@ func _ready():
 	if (loaded == true):
 		return
 	#Sets the appropriate column spacing
-
+	
 	screensize = $Player/Camera.get_viewport_rect().size
 	for column in columns:
 		#sets the columns to their relative width
@@ -50,24 +50,33 @@ func _ready():
 	#$Star.position = Vector2(columns[3], $Player.position.y - screensize.y)
 	loaded = true
 	ParseGameData()
+	print("Loaded game successfully")
 	
 func ParseGameData():
-	
+
 	var f = File.new()
-	if f.file_exists(gameDataPath.replace("user", "res")) and f.file_exists(gameDataPath) == false:
+	var basePath = "res://base_gamedata.txt"
+	
+	
+	var lines = ""
+	f.open(basePath, File.READ)
+	#gets the default values
+	while not f.eof_reached():
+		var line = f.get_line()
+		if line.strip_edges() != "":
+			var split = line.split(":")
+			gamedata[split[0]] = float(split[1])
+		lines += line
+	if f.file_exists(basePath) and f.file_exists(gameDataPath) == false:
 		var temp = File.new()
 		temp.open(gameDataPath, File.WRITE)
-		var lines = ""
-		f.open(gameDataPath.replace("user", "res"), File.READ)
-		#gets the default values
-		while not f.eof_reached():
-			lines += f.get_line()
 		#close it, then open a new one to edit
 		temp.store_string(lines)
-		print("Wrote base values to new entry")
-		f.close()
-		f = File.new()
 		temp.close()
+		
+	f.close()
+	f = File.new()
+		
 	
 	f.open(gameDataPath, File.READ)
 	while not f.eof_reached():

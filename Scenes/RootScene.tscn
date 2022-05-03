@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://Fonts/dogicapixelbold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Sprites/Star01.png" type="Texture" id=2]
@@ -24,10 +24,15 @@ font_data = ExtResource( 1 )
 load_path = "res://.import/Spaceship02.png-6791c0a753fb5a88eeb929ab4e1b0e59.stex"
 
 [sub_resource type="CircleShape2D" id=9]
-radius = 16.0
+radius = 20.0
+
+[sub_resource type="CircleShape2D" id=10]
+radius = 18.0
 
 [sub_resource type="CircleShape2D" id=7]
 radius = 151.0
+
+[sub_resource type="Theme" id=11]
 
 [node name="Root" type="Node2D"]
 script = ExtResource( 6 )
@@ -37,12 +42,15 @@ gameDataPath = "user://base_gamedata.txt"
 currentState = 2
 
 [node name="Player" parent="." instance=ExtResource( 4 )]
-position = Vector2( 235, 891 )
+position = Vector2( 243, 887 )
 z_index = 2
 TimeToMove = 0.02
+ShipColor = Color( 1, 1, 0, 1 )
 ForwardSpeed = 128.0
 DistanceScalar = 8.0
 BoostCooldown = 5.0
+timeToSpeedup = 2.0
+speedupScale = 1.01
 
 [node name="UIManager" type="Node2D" parent="Player"]
 position = Vector2( -21, -22.25 )
@@ -108,10 +116,10 @@ pressed = ExtResource( 15 )
 shape = SubResource( 9 )
 
 [node name="Boost" type="TouchScreenButton" parent="Player/UIManager/IngameGUI"]
-position = Vector2( 237, 648 )
+position = Vector2( 247, 638 )
 rotation = 1.5708
 scale = Vector2( 3, 3 )
-shape = SubResource( 9 )
+shape = SubResource( 10 )
 
 [node name="MainMenuGUI" type="Node2D" parent="Player/UIManager"]
 visible = false
@@ -222,6 +230,21 @@ normal = ExtResource( 16 )
 pressed = ExtResource( 16 )
 shape = SubResource( 9 )
 
+[node name="ColorChooser" type="Node2D" parent="Player/UIManager"]
+visible = false
+
+[node name="Button" type="Button" parent="Player/UIManager/ColorChooser"]
+modulate = Color( 1, 0, 0, 1 )
+margin_right = 12.0
+margin_bottom = 20.0
+rect_scale = Vector2( 3, 3 )
+theme = SubResource( 11 )
+text = "Red"
+icon = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="BackgroundParent" type="Node" parent="."]
 script = ExtResource( 3 )
 buffer = 150.0
@@ -229,13 +252,13 @@ StarSpeed = 75.0
 InitialStarCount = 125
 StarList = [ ExtResource( 2 ), ExtResource( 5 ) ]
 StarScaleBounds = Vector2( 1, 7 )
-StarDelay = Vector2( 0.2, 0.5 )
+StarDelay = Vector2( 1.5, 2.5 )
 MaxStarsPerCluster = 2
 
 [node name="AsteroidSpawner" type="Node" parent="."]
 script = ExtResource( 7 )
 AsteroidTextures = [ ExtResource( 10 ), ExtResource( 11 ), ExtResource( 8 ), ExtResource( 9 ) ]
-AsteroidColors = [ Color( 0.223529, 0.223529, 0.223529, 1 ), Color( 0.305882, 0.305882, 0.305882, 1 ), Color( 0.129412, 0.12549, 0.12549, 1 ), Color( 0.866667, 0.866667, 0.866667, 1 ), Color( 0.956863, 0.956863, 0.956863, 1 ), Color( 0.741176, 0.741176, 0.741176, 1 ) ]
+AsteroidColors = [ Color( 0.223529, 0.223529, 0.223529, 1 ), Color( 0.305882, 0.305882, 0.305882, 1 ), Color( 0.231373, 0.223529, 0.223529, 1 ), Color( 0.866667, 0.866667, 0.866667, 1 ), Color( 0.956863, 0.956863, 0.956863, 1 ), Color( 0.741176, 0.741176, 0.741176, 1 ) ]
 AsteroidDelay = Vector2( 0.5, 3 )
 AsteroidSpeed = 10.0
 

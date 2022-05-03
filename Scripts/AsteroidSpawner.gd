@@ -69,11 +69,11 @@ func Serialize():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if gm.currentState == gm.States.Play:
-		currentTime += delta
-		if (currentTime > maxTime and SpawnAsteroids == true):
-			currentTime = 0
-			maxTime = random.randf_range(AsteroidDelay.x, AsteroidDelay.y)
-			SpawnAsteroid()
-	
+	#if gm.currentState == gm.States.Play:
+	currentTime += delta
+	if (currentTime > maxTime and SpawnAsteroids == true):
+		currentTime = 0
+		maxTime = random.randf_range(AsteroidDelay.x, AsteroidDelay.y)
+		SpawnAsteroid()
+
 	lastPos = player.position

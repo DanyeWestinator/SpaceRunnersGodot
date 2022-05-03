@@ -63,7 +63,7 @@ func _process(delta):
 func UpdateIngameGUI(state):
 	var distanceText = baseTexts["DistanceLabel"].replace("0", str(int(player.distanceTravelled)))
 	$IngameGUI/DistanceLabel.text = distanceText
-	var speedText = baseTexts["SpeedLabel"].replace("0", str(player.ForwardSpeed))
+	var speedText = baseTexts["SpeedLabel"].replace("0", str(int(player.ForwardSpeed)))
 	$IngameGUI/SpeedLabel.text = speedText
 	var boostsString = "Boost: "
 	if player.isBoosting == false:
