@@ -46,7 +46,8 @@ func _ready():
 	gm._ready()
 	columns = gm.columns
 	screensize = gm.screensize
-	
+	#print(ShipColor.g)
+	ShipColor = Color(gm.gamedata["colorR"], gm.gamedata["colorG"], gm.gamedata["colorB"])
 	#Colors the ship, turns on thrust anim
 	$SpaceshipSprite.modulate = ShipColor
 	
@@ -97,14 +98,13 @@ func _process(delta):
 	#calls the movement logic
 	move(delta)
 	#updates GUI
-	UpdateLabels()
+	
 	
 	lastPos = position
 	
 	currentSpeedupTime += delta
 	#don't speed up if boosting or not playing
 	if currentSpeedupTime >= timeToSpeedup and isBoosting == false and gm.currentState == gm.States.Play:
-		print("speeding up")
 		currentSpeedupTime = 0
 		UpdateSpeed(speedupScale)
 	
@@ -148,7 +148,7 @@ func UpdateSpeed(delta):
 	$"./ThrustParticles/ThrustParticlesRight".amount *= delta
 	
 func UpdateLabels():
-	
+	print("old label update")
 	#updates the speed and distance travelled labels
 	#also anything else later goes here
 	var distanceText = baseDistanceLabel.replace("0", str(int(distanceTravelled)))
@@ -167,7 +167,7 @@ func UpdateLabels():
 
 
 func _on_Player_area_entered(area):
-	print("Hit the spaceship!")
+	
 	Die()
 
 func Die():
@@ -185,7 +185,9 @@ func Die():
 	ForwardSpeed = startVelocity
 
 func reset():
+
 	position = startPlayerPos
+	lastPos = position
 	distanceTravelled = 0.0
 	$SpaceshipSprite.visible = true
 	$ThrustParticles.visible = true
@@ -214,8 +216,19 @@ func _on_Right_pressed():
 
 
 func _on_Boost_pressed():
+	print("Player pressed")
 	if gm.currentState == gm.States.Play:
 		if isBoosting == false:
 			UpdateSpeed(BoostScale)
 			isBoosting = true
 	
+
+
+func _on_color_pressed(extra_arg_0):
+	ShipColor = extra_arg_0
+	$SpaceshipSprite.modulate = ShipColor
+	gm.gamedata["colorR"] = ShipColor.r
+	gm.gamedata["colorG"] = ShipColor.g
+	gm.gamedata["colorB"] = ShipColor.b
+	gm.UpdateGameData()
+	pass # Replace with function body.

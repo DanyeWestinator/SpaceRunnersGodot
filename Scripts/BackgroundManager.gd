@@ -55,6 +55,7 @@ func CreateStar(x, y):
 
 func reset():
 	
+	#destroy all stars
 	for i in range(CurrentStars.size()):
 		var star = CurrentStars[i]
 		#print(star)
@@ -62,8 +63,8 @@ func reset():
 		star.queue_free()
 	CurrentStars = []
 	self._ready()
-	
-		
+	currentDelta = 0
+	lastDistance = 0
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -71,6 +72,7 @@ func _process(delta):
 	currentTime += delta
 	var playerPos = player.position
 	currentDelta += player.distanceTravelled - lastDistance
+	
 	#Check if it's time to spawn a new star cluster
 	#if (currentTime >= MaxTime):
 	if (currentDelta >= MaxDelta):

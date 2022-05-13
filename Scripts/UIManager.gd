@@ -40,6 +40,8 @@ func InitState(state):
 		distanceText = distanceText.replace("DIST", str(int(player.distanceTravelled)))
 		distanceText = distanceText.replace("MAX", str(int(maxDistance)))
 		$DeathGUI/MaxDistance.text = distanceText
+	if state == gm.States.ColorChooser:
+		$ColorChooser.visible = true
 		
 
 func CloseState(state):
@@ -49,6 +51,8 @@ func CloseState(state):
 		$IngameGUI.visible = false
 	if state == gm.States.Dead:
 		$DeathGUI.visible = false
+	if state == gm.States.ColorChooser:
+		$ColorChooser.visible = false
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -74,3 +78,4 @@ func UpdateIngameGUI(state):
 			boostsString += player.BoostChar
 	$IngameGUI/BoostsLeft.text = boostsString
 	pass
+

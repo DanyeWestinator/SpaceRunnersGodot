@@ -3,7 +3,8 @@ enum States {
 	Play,
 	Pause,
 	MainMenu,
-	Dead
+	Dead,
+	ColorChooser
 }
 
 var screensize
@@ -50,7 +51,7 @@ func _ready():
 	#$Star.position = Vector2(columns[3], $Player.position.y - screensize.y)
 	loaded = true
 	ParseGameData()
-	print("Loaded game successfully")
+	#print("Loaded game successfully")
 	
 func ParseGameData():
 
@@ -100,7 +101,7 @@ func UpdateGameData():
 		file += item + ":" + str(gamedata[item]) + "\n"
 	var f = File.new()
 	f.open(gameDataPath, File.WRITE)
-	print(gameDataPath)
+	#print(gameDataPath)
 	f.store_string(file)
 	f.close()
 	
@@ -119,3 +120,9 @@ func _process(delta):
 func _on_Restart_pressed():
 	currentState = States.Play
 	reset()
+
+func _on_ColorChooser_pressed():
+	if currentState == States.MainMenu:
+		currentState = States.ColorChooser
+	elif currentState == States.ColorChooser:
+		currentState = States.MainMenu

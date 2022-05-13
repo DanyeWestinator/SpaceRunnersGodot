@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Sprites/Spaceship02.png" type="Texture" id=1]
+
+[node name="Base" type="TouchScreenButton"]
+modulate = Color( 1, 0, 0, 1 )
+scale = Vector2( 5, 5 )
+normal = ExtResource( 1 )
