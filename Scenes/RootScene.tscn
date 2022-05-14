@@ -259,9 +259,10 @@ MaxStarsPerCluster = 2
 [node name="AsteroidSpawner" type="Node" parent="."]
 script = ExtResource( 7 )
 AsteroidTextures = [ ExtResource( 10 ), ExtResource( 11 ), ExtResource( 8 ), ExtResource( 9 ) ]
-AsteroidColors = [ Color( 0.223529, 0.223529, 0.223529, 1 ), Color( 0.305882, 0.305882, 0.305882, 1 ), Color( 0.231373, 0.223529, 0.223529, 1 ), Color( 0.866667, 0.866667, 0.866667, 1 ), Color( 0.956863, 0.956863, 0.956863, 1 ), Color( 0.741176, 0.741176, 0.741176, 1 ) ]
+AsteroidColors = [ Color( 0.729412, 0.580392, 0.388235, 1 ), Color( 0.52549, 0.443137, 0.364706, 1 ), Color( 0.494118, 0.454902, 0.454902, 1 ), Color( 0.866667, 0.866667, 0.866667, 1 ), Color( 0.956863, 0.956863, 0.956863, 1 ), Color( 0.741176, 0.741176, 0.741176, 1 ) ]
 AsteroidDelay = Vector2( 0.5, 3 )
 AsteroidSpeed = 10.0
+AsteroidScale = Vector2( 2, 4 )
 
 [connection signal="area_entered" from="Player" to="Player" method="_on_Player_area_entered"]
 [connection signal="pressed" from="Player/UIManager/IngameGUI/Left" to="Player" method="_on_Left_pressed"]
