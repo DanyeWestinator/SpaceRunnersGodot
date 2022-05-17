@@ -147,6 +147,9 @@ gravity = Vector2( 0, 50 )
 initial_velocity = 16.0
 color_ramp = SubResource( 7 )
 
+[node name="ShootPoint" type="Node2D" parent="."]
+position = Vector2( 0, -9.68 )
+
 [connection signal="area_entered" from="." to="." method="_on_Hitbox_entered"]
 
 [editable path="Labels"]

@@ -36,7 +36,10 @@ var isBoosting = false
 #Speed increases every so often
 export (float) var timeToSpeedup = 15
 var currentSpeedupTime = 0
-export (float) var speedupScale = 1.1 
+export (float) var speedupScale = 1.1
+
+export (float) var minSwipeDistance = 25
+var swipe_start = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -69,10 +72,37 @@ func _ready():
 	
 	
 
-
+func _unhandled_input(event):
+	#handling swipe logic
+	if event is InputEventScreenTouch:
+		if event.pressed:
+		  swipe_start = event.get_position()
+		else:
+			var dir = event.get_position() - swipe_start
+			#ignore small swipes
+			var abs_dir = dir.abs()
+			#ignore small swipes
+			if abs_dir.x < minSwipeDistance and abs_dir.y < minSwipeDistance:
+				return
+			dir = dir.normalized()
+			abs_dir = dir.abs()
+			if dir == Vector2.ZERO:
+				return
+			
+			if abs_dir.x > abs_dir.y:
+				if dir.x < 0:
+					_on_Left_pressed()
+				elif dir.x > 0:
+					_on_Right_pressed()
+			else:
+				#Since going up on the screen is a negative y
+				if dir.y < 0:
+					_on_Boost_pressed()
+		 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if (PAUSED == false):
+		
 		if Input.is_action_just_pressed("move_left"):
 			_on_Left_pressed()
 			#nextColumn -= 1
@@ -167,7 +197,9 @@ func UpdateLabels():
 
 
 func _on_Player_area_entered(area):
-	
+	if ("Bolt" in area.name):
+		return
+	print(area.name)
 	Die()
 
 func Die():
@@ -232,3 +264,10 @@ func _on_color_pressed(extra_arg_0):
 	gm.gamedata["colorB"] = ShipColor.b
 	gm.UpdateGameData()
 	pass # Replace with function body.
+
+func _shoot():
+	var bolt = load("res://Scenes/LaserBolt.tscn").instance()
+	add_child(bolt)
+	bolt.position = $ShootPoint.position
+	
+	print("Shooting")

@@ -117,7 +117,7 @@ normal = SubResource( 8 )
 pressed = ExtResource( 15 )
 shape = SubResource( 9 )
 
-[node name="Boost" type="TouchScreenButton" parent="Player/UIManager/IngameGUI"]
+[node name="MainTap" type="TouchScreenButton" parent="Player/UIManager/IngameGUI"]
 position = Vector2( 247, 638 )
 rotation = 1.5708
 scale = Vector2( 3, 3 )
@@ -261,13 +261,13 @@ script = ExtResource( 7 )
 AsteroidTextures = [ ExtResource( 10 ), ExtResource( 11 ), ExtResource( 8 ), ExtResource( 9 ) ]
 AsteroidColors = [ Color( 0.729412, 0.580392, 0.388235, 1 ), Color( 0.52549, 0.443137, 0.364706, 1 ), Color( 0.494118, 0.454902, 0.454902, 1 ), Color( 0.866667, 0.866667, 0.866667, 1 ), Color( 0.956863, 0.956863, 0.956863, 1 ), Color( 0.741176, 0.741176, 0.741176, 1 ) ]
 AsteroidDelay = Vector2( 0.5, 3 )
-AsteroidSpeed = 10.0
+AsteroidSpeed = 20.0
 AsteroidScale = Vector2( 2, 4 )
 
 [connection signal="area_entered" from="Player" to="Player" method="_on_Player_area_entered"]
 [connection signal="pressed" from="Player/UIManager/IngameGUI/Left" to="Player" method="_on_Left_pressed"]
 [connection signal="pressed" from="Player/UIManager/IngameGUI/Right" to="Player" method="_on_Right_pressed"]
-[connection signal="pressed" from="Player/UIManager/IngameGUI/Boost" to="Player" method="_on_Boost_pressed"]
+[connection signal="pressed" from="Player/UIManager/IngameGUI/MainTap" to="Player" method="_shoot"]
 [connection signal="released" from="Player/UIManager/MainMenuGUI/Start Button" to="." method="_on_Start_Button_released"]
 [connection signal="pressed" from="Player/UIManager/MainMenuGUI/ColorChooser" to="." method="_on_ColorChooser_pressed"]
 [connection signal="pressed" from="Player/UIManager/DeathGUI/Restart" to="." method="_on_Restart_pressed"]

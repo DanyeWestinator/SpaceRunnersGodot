@@ -19,11 +19,19 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if gm.currentState == gm.States.Play:
-		if (position.y > y_bound + 10):
-			get_node("..").Asteroids.erase(self)
-			self.queue_free()
-		
-		position.y += (MoveSpeed * delta)
-		rotation_degrees += (RotateSpeed * delta)
+	#if gm.currentState == gm.States.Play:
+	if (position.y > y_bound + 10):
+		get_node("..").Asteroids.erase(self)
+		self.queue_free()
 	
+	position.y += (MoveSpeed * delta)
+	rotation_degrees += (RotateSpeed * delta)
+	
+func Die():
+	$Particles2D.visible = true
+	$Particles2D.emitting = true
+	$Sprite.visible = false
+	$CollisionShape2D.queue_free()
+	$Particles2D.modulate = $Sprite.modulate
+	
+	RotateSpeed = 0
