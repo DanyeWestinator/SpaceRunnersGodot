@@ -41,6 +41,13 @@ export (float) var speedupScale = 1.1
 export (float) var minSwipeDistance = 25
 var swipe_start = null
 
+## ShotsVariables
+export (String) var ShotsChar = "X"
+export (int) var MaxShots = 3
+export (float) var ShotRecharge = 1
+var currentShotTime
+var currentAsteroidsDestroyed = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#gets the game manager
@@ -68,6 +75,8 @@ func _ready():
 	lastPos = position
 	startPlayerPos = position
 	startVelocity = ForwardSpeed
+	
+	currentShotTime = ShotRecharge * MaxShots
 
 	
 	
@@ -113,11 +122,8 @@ func _process(delta):
 			_on_Boost_pressed()
 			#UpdateSpeed(BoostScale)
 			#isBoosting = true
-		if (Input.is_action_just_pressed("move_down") and false):
-			if (UpButtonSpeedUp):
-				UpdateSpeed(0.5)
-			else:
-				position.y += 50
+		if Input.is_action_just_pressed("primary_tap"):
+			_shoot()
 		if Input.is_action_just_pressed("ui_cancel"):
 			PAUSED = true
 	elif (PAUSED == true):
@@ -127,7 +133,13 @@ func _process(delta):
 	BoostLogic(delta)
 	#calls the movement logic
 	move(delta)
-	#updates GUI
+	
+	
+	if currentShotTime < (MaxShots * ShotRecharge):
+		currentShotTime += delta
+	if currentShotTime > (MaxShots * ShotRecharge):
+		currentShotTime = MaxShots * ShotRecharge
+	
 	
 	
 	lastPos = position
@@ -199,7 +211,6 @@ func UpdateLabels():
 func _on_Player_area_entered(area):
 	if ("Bolt" in area.name):
 		return
-	print(area.name)
 	Die()
 
 func Die():
@@ -221,6 +232,7 @@ func reset():
 	position = startPlayerPos
 	lastPos = position
 	distanceTravelled = 0.0
+	currentAsteroidsDestroyed = 0
 	$SpaceshipSprite.visible = true
 	$ThrustParticles.visible = true
 	ForwardSpeed = startVelocity
@@ -248,7 +260,6 @@ func _on_Right_pressed():
 
 
 func _on_Boost_pressed():
-	print("Player pressed")
 	if gm.currentState == gm.States.Play:
 		if isBoosting == false:
 			UpdateSpeed(BoostScale)
@@ -266,8 +277,21 @@ func _on_color_pressed(extra_arg_0):
 	pass # Replace with function body.
 
 func _shoot():
-	var bolt = load("res://Scenes/LaserBolt.tscn").instance()
-	add_child(bolt)
-	bolt.position = $ShootPoint.position
+	if currentShotTime < ShotRecharge or gm.currentState != gm.States.Play:
+		return
+		
+	currentShotTime -= ShotRecharge
 	
-	print("Shooting")
+	var bolt = load("res://Scenes/LaserBolt.tscn").instance()
+	gm.add_child(bolt)
+	#set bolt variables
+	bolt.global_position = $ShootPoint.global_position
+	bolt.player = self
+	bolt.target_x = columns[nextColumn]
+	bolt.tolerance = _tolerance
+	bolt.TimeToMove = TimeToMove
+	bolt.moveSpeed *= ForwardSpeed
+	bolt.gm = gm
+	if isBoosting:
+		bolt.moveSpeed /= BoostScale
+

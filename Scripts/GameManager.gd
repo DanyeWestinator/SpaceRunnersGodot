@@ -126,3 +126,9 @@ func _on_ColorChooser_pressed():
 		currentState = States.ColorChooser
 	elif currentState == States.ColorChooser:
 		currentState = States.MainMenu
+
+
+func _on_MainMenu_button_up():
+	currentState = States.MainMenu
+	$Player/SpaceshipSprite.visible = true
+	$Player/ThrustParticles.visible = true

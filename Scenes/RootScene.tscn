@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://Fonts/dogicapixelbold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Sprites/Star01.png" type="Texture" id=2]
@@ -36,6 +36,15 @@ radius = 151.0
 [sub_resource type="CircleShape2D" id=11]
 radius = 65.0
 
+[sub_resource type="DynamicFont" id=12]
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxEmpty" id=14]
+
+[sub_resource type="StyleBoxEmpty" id=15]
+
+[sub_resource type="StyleBoxEmpty" id=13]
+
 [node name="Root" type="Node2D"]
 script = ExtResource( 6 )
 starTexture = ExtResource( 5 )
@@ -53,6 +62,7 @@ DistanceScalar = 8.0
 BoostCooldown = 5.0
 timeToSpeedup = 2.0
 speedupScale = 1.01
+ShotRecharge = 2.0
 
 [node name="UIManager" type="Node2D" parent="Player"]
 position = Vector2( -21, -22.25 )
@@ -83,6 +93,17 @@ margin_right = 308.0
 margin_bottom = 29.0
 custom_fonts/font = SubResource( 6 )
 text = ">>>>>"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ShotsLeft" type="Label" parent="Player/UIManager/IngameGUI"]
+margin_left = -26.0
+margin_top = 8.0
+margin_right = 308.0
+margin_bottom = 65.0
+custom_fonts/font = SubResource( 6 )
+text = "Shots: "
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -202,10 +223,10 @@ visible = false
 
 [node name="YouDied" type="Label" parent="Player/UIManager/DeathGUI"]
 modulate = Color( 1, 0, 0, 1 )
-margin_left = -39.0
-margin_top = -391.0
-margin_right = 295.0
-margin_bottom = -349.0
+margin_left = -35.0
+margin_top = -523.0
+margin_right = 299.0
+margin_bottom = -481.0
 rect_scale = Vector2( 3, 3 )
 custom_fonts/font = SubResource( 6 )
 text = "YOU DIED!
@@ -215,10 +236,10 @@ __meta__ = {
 }
 
 [node name="MaxDistance" type="Label" parent="Player/UIManager/DeathGUI"]
-margin_left = -6.0
-margin_top = -256.0
-margin_right = 328.0
-margin_bottom = -199.0
+margin_left = -2.0
+margin_top = -388.0
+margin_right = 332.0
+margin_bottom = -331.0
 rect_scale = Vector2( 1.4, 2 )
 custom_fonts/font = SubResource( 6 )
 text = "Distance: DISTkm
@@ -229,12 +250,54 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="AsteroidsLabel" type="Label" parent="Player/UIManager/DeathGUI"]
+margin_left = -31.0
+margin_top = -209.0
+margin_right = 303.0
+margin_bottom = -152.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "Asteroids 
+
+Annihilated:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AsteroidsCounter" type="Label" parent="Player/UIManager/DeathGUI"]
+margin_left = 212.0
+margin_top = -189.0
+margin_right = 327.0
+margin_bottom = -132.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "100"
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Restart" type="TouchScreenButton" parent="Player/UIManager/DeathGUI"]
 position = Vector2( 108, -78 )
 scale = Vector2( 3, 3 )
 normal = ExtResource( 16 )
 pressed = ExtResource( 16 )
 shape = SubResource( 9 )
+
+[node name="MainMenu" type="Button" parent="Player/UIManager/DeathGUI"]
+margin_left = 15.0
+margin_top = 49.0
+margin_right = 163.0
+margin_bottom = 69.0
+rect_scale = Vector2( 2, 2 )
+custom_fonts/font = SubResource( 12 )
+custom_styles/hover = SubResource( 14 )
+custom_styles/pressed = SubResource( 15 )
+custom_styles/normal = SubResource( 13 )
+text = "Main Menu"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="ColorChooser" type="Node2D" parent="Player/UIManager"]
 visible = false
@@ -260,8 +323,9 @@ MaxStarsPerCluster = 2
 script = ExtResource( 7 )
 AsteroidTextures = [ ExtResource( 10 ), ExtResource( 11 ), ExtResource( 8 ), ExtResource( 9 ) ]
 AsteroidColors = [ Color( 0.729412, 0.580392, 0.388235, 1 ), Color( 0.52549, 0.443137, 0.364706, 1 ), Color( 0.494118, 0.454902, 0.454902, 1 ), Color( 0.866667, 0.866667, 0.866667, 1 ), Color( 0.956863, 0.956863, 0.956863, 1 ), Color( 0.741176, 0.741176, 0.741176, 1 ) ]
-AsteroidDelay = Vector2( 0.5, 3 )
+AsteroidDelay = Vector2( 0.5, 1.5 )
 AsteroidSpeed = 20.0
+AsteroidRotateSpeed = 35.0
 AsteroidScale = Vector2( 2, 4 )
 
 [connection signal="area_entered" from="Player" to="Player" method="_on_Player_area_entered"]
@@ -271,4 +335,5 @@ AsteroidScale = Vector2( 2, 4 )
 [connection signal="released" from="Player/UIManager/MainMenuGUI/Start Button" to="." method="_on_Start_Button_released"]
 [connection signal="pressed" from="Player/UIManager/MainMenuGUI/ColorChooser" to="." method="_on_ColorChooser_pressed"]
 [connection signal="pressed" from="Player/UIManager/DeathGUI/Restart" to="." method="_on_Restart_pressed"]
+[connection signal="button_up" from="Player/UIManager/DeathGUI/MainMenu" to="." method="_on_MainMenu_button_up"]
 [connection signal="pressed" from="Player/UIManager/ColorChooser/ColorChooser2" to="." method="_on_ColorChooser_pressed"]

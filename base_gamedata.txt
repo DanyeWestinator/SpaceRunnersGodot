@@ -2,3 +2,4 @@ maxDistance:0.0
 colorR:0.0
 colorG:1.0
 colorB:0.0
+asteroidsDestroyed:0

@@ -6,6 +6,7 @@ onready var player = get_node("..")
 var baseTexts = {}
 
 var lastState
+var regex = RegEx.new()
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -15,6 +16,7 @@ var lastState
 func _ready():
 	baseTexts[$IngameGUI/DistanceLabel.name] = $IngameGUI/DistanceLabel.text
 	baseTexts[$IngameGUI/SpeedLabel.name] = $IngameGUI/SpeedLabel.text
+	baseTexts[$IngameGUI/ShotsLeft.name] = $IngameGUI/ShotsLeft.text
 	baseTexts[$IngameGUI/BoostsLeft.name] = $IngameGUI/BoostsLeft.text
 	baseTexts[$DeathGUI/MaxDistance.name] = $DeathGUI/MaxDistance.text
 	InitState(gm.currentState)
@@ -40,6 +42,9 @@ func InitState(state):
 		distanceText = distanceText.replace("DIST", str(int(player.distanceTravelled)))
 		distanceText = distanceText.replace("MAX", str(int(maxDistance)))
 		$DeathGUI/MaxDistance.text = distanceText
+		var count = str(player.currentAsteroidsDestroyed)
+		$DeathGUI/AsteroidsCounter.text = count
+		
 	if state == gm.States.ColorChooser:
 		$ColorChooser.visible = true
 		
@@ -77,5 +82,7 @@ func UpdateIngameGUI(state):
 		for i in range(int(player.BoostTextLen * (float(player.currentBoostTime) / player.BoostTime))):
 			boostsString += player.BoostChar
 	$IngameGUI/BoostsLeft.text = boostsString
-	pass
-
+	$IngameGUI/ShotsLeft.text = baseTexts["ShotsLeft"]
+	for i in range(int(player.currentShotTime / player.ShotRecharge)):
+		$IngameGUI/ShotsLeft.text += player.ShotsChar
+	
