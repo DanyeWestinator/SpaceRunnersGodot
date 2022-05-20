@@ -109,6 +109,7 @@ func reset():
 	$Player.reset()
 	$AsteroidSpawner.reset()
 	$BackgroundParent.reset()
+	$EnemySpawner.reset()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

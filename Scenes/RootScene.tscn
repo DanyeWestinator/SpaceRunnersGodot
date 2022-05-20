@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://Fonts/dogicapixelbold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Sprites/Star01.png" type="Texture" id=2]
@@ -17,6 +17,7 @@
 [ext_resource path="res://Sprites/Spaceship02.png" type="Texture" id=15]
 [ext_resource path="res://Sprites/Arrow.png" type="Texture" id=16]
 [ext_resource path="res://Scripts/ColorChooser.gd" type="Script" id=17]
+[ext_resource path="res://Scripts/EnemySpawner.gd" type="Script" id=18]
 
 [sub_resource type="DynamicFont" id=6]
 font_data = ExtResource( 1 )
@@ -61,7 +62,8 @@ ForwardSpeed = 128.0
 DistanceScalar = 8.0
 BoostCooldown = 5.0
 timeToSpeedup = 2.0
-speedupScale = 1.01
+speedupScale = 1.02
+laserMoveSpeed = 12.0
 ShotRecharge = 2.0
 
 [node name="UIManager" type="Node2D" parent="Player"]
@@ -327,6 +329,11 @@ AsteroidDelay = Vector2( 0.5, 1.5 )
 AsteroidSpeed = 20.0
 AsteroidRotateSpeed = 35.0
 AsteroidScale = Vector2( 2, 4 )
+
+[node name="EnemySpawner" type="Node2D" parent="."]
+z_index = 1
+script = ExtResource( 18 )
+ShipDelay = Vector2( 1.5, 5 )
 
 [connection signal="area_entered" from="Player" to="Player" method="_on_Player_area_entered"]
 [connection signal="pressed" from="Player/UIManager/IngameGUI/Left" to="Player" method="_on_Left_pressed"]

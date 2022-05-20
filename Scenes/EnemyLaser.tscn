@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Sprites/Star01.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/EnemyLaser.gd" type="Script" id=2]
+
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 0.5
+height = 0.5
+
+[node name="Bolt" type="Sprite"]
+modulate = Color( 0, 1, 0, 1 )
+scale = Vector2( 6, 40 )
+texture = ExtResource( 1 )
+script = ExtResource( 2 )
+MoveSpeed = 250.0
+
+[node name="BoltCollider" type="Area2D" parent="."]
+position = Vector2( 0, 0.5 )
+gravity_vec = Vector2( 0, 0 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BoltCollider"]
+shape = SubResource( 1 )
+
+[connection signal="area_entered" from="BoltCollider" to="." method="_on_BoltCollider_area_entered"]

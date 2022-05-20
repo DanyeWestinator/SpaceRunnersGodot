@@ -42,6 +42,9 @@ export (float) var minSwipeDistance = 25
 var swipe_start = null
 
 ## ShotsVariables
+export (float) var laserMoveSpeed = 25
+export (Vector2) var laserScale = Vector2(6, 48)
+export (Color) var laserColor = Color(1, 0, 0)
 export (String) var ShotsChar = "X"
 export (int) var MaxShots = 3
 export (float) var ShotRecharge = 1
@@ -77,9 +80,6 @@ func _ready():
 	startVelocity = ForwardSpeed
 	
 	currentShotTime = ShotRecharge * MaxShots
-
-	
-	
 
 func _unhandled_input(event):
 	#handling swipe logic
@@ -158,7 +158,6 @@ func BoostLogic(delta):
 		currentBoostTime = 0
 		UpdateSpeed((1.0 / BoostScale))
 	
-	
 func move(delta) -> void:
 	
 	#every frame, decreases y by Speed * delta
@@ -207,7 +206,6 @@ func UpdateLabels():
 	$Labels/BoostsLeft.text = boostsString
 	#$Labels/Temp.text = "(" + str(int(global_position.x)) + ", " + str(int(global_position.y)) + ")"
 
-
 func _on_Player_area_entered(area):
 	if ("Bolt" in area.name):
 		return
@@ -221,6 +219,7 @@ func Die():
 	$SpaceshipSprite.visible = false
 	$ThrustParticles.visible = false
 	$DeathParticleExplosion.emitting = true
+	$Hitbox.disabled = true
 	
 	#get_node("../AsteroidSpawner").SpawnAsteroids = false
 	
@@ -236,8 +235,9 @@ func reset():
 	$SpaceshipSprite.visible = true
 	$ThrustParticles.visible = true
 	ForwardSpeed = startVelocity
-	get_node("../AsteroidSpawner").SpawnAsteroids = true
-
+	currentShotTime = ShotRecharge * MaxShots
+	$Hitbox.disabled = false
+	#get_node("../AsteroidSpawner").SpawnAsteroids = true
 func _on_Left_pressed():
 	if gm.currentState == gm.States.Play:
 		if nextColumn > 1:
@@ -249,7 +249,6 @@ func _on_Left_pressed():
 			$UIManager/IngameGUI/Left.visible = false
 			#$UIManager/IngameGUI/Left.paused = true
 
-
 func _on_Right_pressed():
 	if gm.currentState == gm.States.Play:
 		if nextColumn < columns.size():
@@ -258,15 +257,12 @@ func _on_Right_pressed():
 		if nextColumn == columns.size():
 			$UIManager/IngameGUI/Right.visible = false
 
-
 func _on_Boost_pressed():
 	if gm.currentState == gm.States.Play:
 		if isBoosting == false:
 			UpdateSpeed(BoostScale)
 			isBoosting = true
 	
-
-
 func _on_color_pressed(extra_arg_0):
 	ShipColor = extra_arg_0
 	$SpaceshipSprite.modulate = ShipColor
@@ -283,15 +279,13 @@ func _shoot():
 	currentShotTime -= ShotRecharge
 	
 	var bolt = load("res://Scenes/LaserBolt.tscn").instance()
-	gm.add_child(bolt)
-	#set bolt variables
-	bolt.global_position = $ShootPoint.global_position
-	bolt.player = self
+	bolt.Create(gm, self, $ShootPoint.global_position,
+	laserMoveSpeed * ForwardSpeed, laserScale, laserColor)
+	
 	bolt.target_x = columns[nextColumn]
 	bolt.tolerance = _tolerance
 	bolt.TimeToMove = TimeToMove
-	bolt.moveSpeed *= ForwardSpeed
-	bolt.gm = gm
+	
 	if isBoosting:
 		bolt.moveSpeed /= BoostScale
 

@@ -8,11 +8,11 @@ var gm
 var target_x = -1
 var tolerance
 var TimeToMove
+var hit = false
 
+var firedBy = "Player"
+var direction = 1
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
 
 
@@ -20,28 +20,46 @@ var TimeToMove
 func _ready():
 	pass # Replace with function body.
 
-
+func Create(_gm, _player, global_pos, speed,
+ boltScale, color, direction = 1):
+	self.gm = _gm
+	self.scale = boltScale
+	gm.add_child(self)
+	self.player = _player
+	self.direction = direction
+	global_position = global_pos
+	moveSpeed = speed
+	self.modulate = color
+	
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	position.y -= (moveSpeed * delta)
+	position.y -= (moveSpeed * delta * direction)
 	if target_x != -1 and (abs(target_x - position.x) < tolerance):
 		position.x = target_x
-	else:
+	elif target_x != -1:
 		position.x = lerp(position.x, target_x, TimeToMove)
-	if position.y < player.position.y - 1500:
+	if position.distance_to(player.position) >= 1500:
 		self.queue_free()
+	#if position.y < player.position.y - 1500:
+		
 
 
 func _on_Area2D_area_entered(area):
 	#Ignore the player and other bolts
-	if "Player" in area.name or "Bolt" in area.name:
+	if firedBy in area.name or "Bolt" in area.name:
+		return
+	if hit == true:
 		return
 	if "AsteroidPrefab" in area.name:
 		area.Die()
-		player.currentAsteroidsDestroyed += 1
-		gm.gamedata["asteroidsDestroyed"] += 1
-		print("Asteroids desroyed: ", gm.gamedata["asteroidsDestroyed"])
-	
+		if "Player" in firedBy:
+			player.currentAsteroidsDestroyed += 1
+			gm.gamedata["asteroidsDestroyed"] += 1
+	elif "Enemy" in area.name and ("Enemy" in firedBy) == false:
+		area.get_node("..").Die()
+	if "Player" in area.name and "Enemy" in firedBy:
+		area.Die()
+	hit = true
 	self.queue_free()
-	#print(area.name)
-	pass # Replace with function body.
+	
