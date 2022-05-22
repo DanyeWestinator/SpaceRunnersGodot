@@ -13,7 +13,7 @@ func _ready():
 	player = get_tree().root.get_child(0).get_child(0)
 	#base.visible = false
 	var x = -1 * spacing
-	var y = position.y
+	var y = $StartCenter.position.y
 	for color in PlayerColors:
 		if x > spacing:
 			x = -1 * spacing

@@ -305,11 +305,14 @@ __meta__ = {
 visible = false
 position = Vector2( 122, -125 )
 script = ExtResource( 17 )
-PlayerColors = [ Color( 1, 0, 0, 1 ), Color( 0, 1, 0, 1 ), Color( 0, 0, 1, 1 ), Color( 1, 1, 0, 1 ), Color( 1, 0, 1, 1 ), Color( 0, 1, 1, 1 ) ]
+PlayerColors = [ Color( 1, 0, 0, 1 ), Color( 0, 1, 0, 1 ), Color( 0, 0, 1, 1 ), Color( 1, 1, 0, 1 ), Color( 1, 0, 1, 1 ), Color( 0, 1, 1, 1 ), Color( 1, 0, 0.607843, 1 ), Color( 0, 0.415686, 1, 1 ), Color( 1, 0.607843, 0, 1 ) ]
 
 [node name="ColorChooser2" type="TouchScreenButton" parent="Player/UIManager/ColorChooser"]
 position = Vector2( -23, 231 )
 shape = SubResource( 11 )
+
+[node name="StartCenter" type="Node2D" parent="Player/UIManager/ColorChooser"]
+position = Vector2( 27, -262 )
 
 [node name="BackgroundParent" type="Node" parent="."]
 script = ExtResource( 3 )
