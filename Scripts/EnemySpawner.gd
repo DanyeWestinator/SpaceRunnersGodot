@@ -31,6 +31,7 @@ func reset():
 		i += 1
 		#slightly complicated method to check if the ship is null
 		if weakref(ship).get_ref():
+			ship.clearShots()
 			ship.queue_free()
 	ships = []
 

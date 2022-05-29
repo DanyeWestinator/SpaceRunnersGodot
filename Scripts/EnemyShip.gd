@@ -7,6 +7,7 @@ var destroyDelay = 3
 var currentDestroyTime = -1
 var player
 var laserPrefab = load("res://Scenes/LaserBolt.tscn")
+var shots = []
 onready var gm = get_tree().root.get_child(0)
 var laserBoltSpeed
 var laserBoltColor
@@ -21,7 +22,7 @@ var i
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var tts = timeToShoot
-	currentShotTime = timeToShoot * 0.7
+	currentShotTime = 0#timeToShoot * 0.7
 	print(currentShotTime, "\t" , tts)
 
 func Die():
@@ -33,9 +34,12 @@ func Die():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if gm.currentState == gm.States.Pause:
+		return
 	if player.nextColumn == i:
 		currentShotTime += delta
-		
+	else:
+		currentShotTime = 0
 	if currentShotTime >= timeToShoot and currentDestroyTime < 0 and gm.currentState == gm.States.Play:
 		currentShotTime = 0
 		Shoot()
@@ -43,8 +47,12 @@ func _process(delta):
 	if currentDestroyTime >= 0:
 		currentDestroyTime += delta
 		if currentDestroyTime >= destroyDelay:
+			clearShots()
 			self.queue_free()
-
+func clearShots():
+	for shot in shots:
+				if weakref(shot).get_ref():
+					shot.queue_free()
 
 func _on_EnemyArea_area_entered(area):
 	if "Player" in area.name and gm.currentState == gm.States.Play:
@@ -54,7 +62,7 @@ func Shoot():
 		var bolt = laserPrefab.instance()
 		var pos = $FirePoints.get_child(i).global_position
 		pos = self.global_position - pos
-
+		shots.append(bolt)
 		bolt.Create(gm, player, pos, laserBoltSpeed,
 		laserBoltScale, laserBoltColor, -1)
 		bolt.firedBy = "Enemy"

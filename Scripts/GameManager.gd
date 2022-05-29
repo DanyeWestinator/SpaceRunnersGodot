@@ -19,6 +19,7 @@ export (States) var currentState
 
 
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#don't run if already loaded
@@ -104,7 +105,13 @@ func UpdateGameData():
 	#print(gameDataPath)
 	f.store_string(file)
 	f.close()
-	
+func UpdateDataItem(name, val, update = true):
+	#if not update, set
+	if name in gamedata.keys() and update:
+		gamedata[name] += val
+	else:
+		gamedata[name] = val
+	UpdateGameData()
 func reset():
 	$Player.reset()
 	$AsteroidSpawner.reset()

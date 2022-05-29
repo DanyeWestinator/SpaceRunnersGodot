@@ -23,7 +23,9 @@ func _process(delta):
 	if (position.y > y_bound + 10):
 		get_node("..").Asteroids.erase(self)
 		self.queue_free()
-	
+	#don't move if paused
+	if gm.currentState == gm.States.Pause:
+		return
 	position.y += (MoveSpeed * delta)
 	rotation_degrees += (RotateSpeed * delta)
 	

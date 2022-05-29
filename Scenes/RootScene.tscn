@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://Fonts/dogicapixelbold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Sprites/Star01.png" type="Texture" id=2]
@@ -18,6 +18,8 @@
 [ext_resource path="res://Sprites/Arrow.png" type="Texture" id=16]
 [ext_resource path="res://Scripts/ColorChooser.gd" type="Script" id=17]
 [ext_resource path="res://Scripts/EnemySpawner.gd" type="Script" id=18]
+[ext_resource path="res://Sprites/PauseButton.png" type="Texture" id=19]
+[ext_resource path="res://Sprites/PlayButton.png" type="Texture" id=20]
 
 [sub_resource type="DynamicFont" id=6]
 font_data = ExtResource( 1 )
@@ -46,6 +48,16 @@ font_data = ExtResource( 1 )
 
 [sub_resource type="StyleBoxEmpty" id=13]
 
+[sub_resource type="StyleBoxEmpty" id=20]
+
+[sub_resource type="StyleBoxEmpty" id=17]
+
+[sub_resource type="StyleBoxEmpty" id=18]
+
+[sub_resource type="StyleBoxEmpty" id=19]
+
+[sub_resource type="StyleBoxEmpty" id=21]
+
 [node name="Root" type="Node2D"]
 script = ExtResource( 6 )
 starTexture = ExtResource( 5 )
@@ -59,7 +71,7 @@ z_index = 2
 TimeToMove = 0.02
 ShipColor = Color( 0, 1, 0, 1 )
 ForwardSpeed = 128.0
-DistanceScalar = 8.0
+DistanceScalar = 16.0
 BoostCooldown = 5.0
 timeToSpeedup = 2.0
 speedupScale = 1.02
@@ -70,6 +82,7 @@ ShotRecharge = 2.0
 position = Vector2( -21, -22.25 )
 scale = Vector2( 0.125, 0.125 )
 script = ExtResource( 12 )
+playPauseButtons = [ ExtResource( 19 ), ExtResource( 20 ) ]
 
 [node name="IngameGUI" type="Node2D" parent="Player/UIManager"]
 visible = false
@@ -314,6 +327,47 @@ shape = SubResource( 11 )
 [node name="StartCenter" type="Node2D" parent="Player/UIManager/ColorChooser"]
 position = Vector2( 27, -262 )
 
+[node name="PlayPause" type="Node2D" parent="Player/UIManager"]
+position = Vector2( 119, -691 )
+
+[node name="PlayPauseParent" type="Node2D" parent="Player/UIManager/PlayPause"]
+
+[node name="PlayPauseButton" type="Button" parent="Player/UIManager/PlayPause/PlayPauseParent"]
+margin_right = 82.0
+margin_bottom = 77.0
+custom_styles/hover = SubResource( 20 )
+custom_styles/pressed = SubResource( 17 )
+custom_styles/focus = SubResource( 18 )
+custom_styles/disabled = SubResource( 19 )
+custom_styles/normal = SubResource( 21 )
+
+[node name="Sprite" type="Sprite" parent="Player/UIManager/PlayPause/PlayPauseParent"]
+position = Vector2( 51, 51 )
+scale = Vector2( 3, 3 )
+texture = ExtResource( 19 )
+
+[node name="PauseGUI" type="Node2D" parent="Player/UIManager/PlayPause"]
+visible = false
+
+[node name="Restart" type="TouchScreenButton" parent="Player/UIManager/PlayPause/PauseGUI"]
+position = Vector2( -3, 536 )
+scale = Vector2( 3, 3 )
+normal = ExtResource( 16 )
+pressed = ExtResource( 16 )
+shape = SubResource( 9 )
+
+[node name="MainMenu" type="Button" parent="Player/UIManager/PlayPause/PauseGUI"]
+margin_left = -96.0
+margin_top = 663.0
+margin_right = 52.0
+margin_bottom = 683.0
+rect_scale = Vector2( 2, 2 )
+custom_fonts/font = SubResource( 12 )
+custom_styles/hover = SubResource( 14 )
+custom_styles/pressed = SubResource( 15 )
+custom_styles/normal = SubResource( 13 )
+text = "Main Menu"
+
 [node name="BackgroundParent" type="Node" parent="."]
 script = ExtResource( 3 )
 buffer = 150.0
@@ -337,6 +391,7 @@ AsteroidScale = Vector2( 2, 4 )
 z_index = 1
 script = ExtResource( 18 )
 ShipDelay = Vector2( 1.5, 5 )
+timeToShoot = 1.0
 
 [connection signal="area_entered" from="Player" to="Player" method="_on_Player_area_entered"]
 [connection signal="pressed" from="Player/UIManager/IngameGUI/Left" to="Player" method="_on_Left_pressed"]
@@ -347,3 +402,6 @@ ShipDelay = Vector2( 1.5, 5 )
 [connection signal="pressed" from="Player/UIManager/DeathGUI/Restart" to="." method="_on_Restart_pressed"]
 [connection signal="button_up" from="Player/UIManager/DeathGUI/MainMenu" to="." method="_on_MainMenu_button_up"]
 [connection signal="pressed" from="Player/UIManager/ColorChooser/ColorChooser2" to="." method="_on_ColorChooser_pressed"]
+[connection signal="button_down" from="Player/UIManager/PlayPause/PlayPauseParent/PlayPauseButton" to="Player/UIManager" method="UpdatePause"]
+[connection signal="pressed" from="Player/UIManager/PlayPause/PauseGUI/Restart" to="." method="_on_Restart_pressed"]
+[connection signal="button_up" from="Player/UIManager/PlayPause/PauseGUI/MainMenu" to="." method="_on_MainMenu_button_up"]

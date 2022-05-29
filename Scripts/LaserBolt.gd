@@ -34,6 +34,8 @@ func Create(_gm, _player, global_pos, speed,
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if gm.currentState == gm.States.Pause:
+		return
 	position.y -= (moveSpeed * delta * direction)
 	if target_x != -1 and (abs(target_x - position.x) < tolerance):
 		position.x = target_x
@@ -55,7 +57,8 @@ func _on_Area2D_area_entered(area):
 		area.Die()
 		if "Player" in firedBy:
 			player.currentAsteroidsDestroyed += 1
-			gm.gamedata["asteroidsDestroyed"] += 1
+			gm.UpdateDataItem("asteroidsDestroyed", 1)
+			#gm.gamedata["asteroidsDestroyed"] += 1
 	elif "Enemy" in area.name and ("Enemy" in firedBy) == false:
 		area.get_node("..").Die()
 	if "Player" in area.name and "Enemy" in firedBy:

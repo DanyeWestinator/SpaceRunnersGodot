@@ -110,25 +110,21 @@ func _unhandled_input(event):
 		 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if (PAUSED == false):
-		
-		if Input.is_action_just_pressed("move_left"):
-			_on_Left_pressed()
-			#nextColumn -= 1
-		if Input.is_action_just_pressed("move_right"):
-			_on_Right_pressed()
-			#nextColumn += 1
-		if Input.is_action_just_pressed("move_up"):
-			_on_Boost_pressed()
-			#UpdateSpeed(BoostScale)
-			#isBoosting = true
-		if Input.is_action_just_pressed("primary_tap"):
-			_shoot()
-		if Input.is_action_just_pressed("ui_cancel"):
-			PAUSED = true
-	elif (PAUSED == true):
-		if Input.is_action_just_pressed("ui_cancel"):
-			PAUSED = false
+	if gm.currentState == gm.States.Pause:
+		return
+	if Input.is_action_just_pressed("move_left"):
+		_on_Left_pressed()
+		#nextColumn -= 1
+	if Input.is_action_just_pressed("move_right"):
+		_on_Right_pressed()
+		#nextColumn += 1
+	if Input.is_action_just_pressed("move_up"):
+		_on_Boost_pressed()
+		#UpdateSpeed(BoostScale)
+		#isBoosting = true
+	if Input.is_action_just_pressed("primary_tap"):
+		_shoot()
+	
 
 	BoostLogic(delta)
 	#calls the movement logic
@@ -266,12 +262,14 @@ func _on_Boost_pressed():
 func _on_color_pressed(extra_arg_0):
 	ShipColor = extra_arg_0
 	$SpaceshipSprite.modulate = ShipColor
-	gm.gamedata["colorR"] = ShipColor.r
-	gm.gamedata["colorG"] = ShipColor.g
-	gm.gamedata["colorB"] = ShipColor.b
-	gm.UpdateGameData()
-	pass # Replace with function body.
-
+	gm.UpdateDataItem("colorR", ShipColor.r, false)
+	gm.UpdateDataItem("colorG", ShipColor.g, false)
+	gm.UpdateDataItem("colorB", ShipColor.b, false)
+	#gm.gamedata["colorR"] = ShipColor.r
+	#gm.gamedata["colorG"] = ShipColor.g
+	#gm.gamedata["colorB"] = ShipColor.b
+	#gm.UpdateGameData()
+	
 func _shoot():
 	if currentShotTime < ShotRecharge or gm.currentState != gm.States.Play:
 		return

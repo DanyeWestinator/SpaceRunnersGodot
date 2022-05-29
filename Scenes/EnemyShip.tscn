@@ -53,9 +53,9 @@ color = Color( 0.392157, 0, 1, 1 )
 [node name="FirePoints" type="Node" parent="."]
 
 [node name="Left" type="Node2D" parent="FirePoints"]
-position = Vector2( -22, 25 )
+position = Vector2( -22, 37.475 )
 
 [node name="Right" type="Node2D" parent="FirePoints"]
-position = Vector2( 22, 25 )
+position = Vector2( 22, 37.475 )
 
 [connection signal="area_entered" from="EnemyArea" to="." method="_on_EnemyArea_area_entered"]
