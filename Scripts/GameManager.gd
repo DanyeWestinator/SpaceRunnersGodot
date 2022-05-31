@@ -112,6 +112,15 @@ func UpdateDataItem(name, val, update = true):
 	else:
 		gamedata[name] = val
 	UpdateGameData()
+
+#Safe way to ask if an object exists. If not, creates it with val 0
+func GetDataItem(item, default = 0):
+	if item in gamedata.keys():
+		return gamedata[item]
+		
+	gamedata[item] = default
+	UpdateGameData()
+	return gamedata[item]
 func reset():
 	$Player.reset()
 	$AsteroidSpawner.reset()
@@ -140,3 +149,4 @@ func _on_MainMenu_button_up():
 	currentState = States.MainMenu
 	$Player/SpaceshipSprite.visible = true
 	$Player/ThrustParticles.visible = true
+

@@ -57,7 +57,7 @@ func _on_Area2D_area_entered(area):
 		area.Die()
 		if "Player" in firedBy:
 			player.currentAsteroidsDestroyed += 1
-			gm.UpdateDataItem("asteroidsDestroyed", 1)
+			
 			#gm.gamedata["asteroidsDestroyed"] += 1
 	elif "Enemy" in area.name and ("Enemy" in firedBy) == false:
 		area.get_node("..").Die()

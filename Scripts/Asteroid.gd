@@ -30,6 +30,7 @@ func _process(delta):
 	rotation_degrees += (RotateSpeed * delta)
 	
 func Die():
+	gm.UpdateDataItem("asteroidsDestroyed", 1)
 	$Particles2D.visible = true
 	$Particles2D.emitting = true
 	$Sprite.visible = false

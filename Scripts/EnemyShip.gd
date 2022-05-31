@@ -26,6 +26,7 @@ func _ready():
 	print(currentShotTime, "\t" , tts)
 
 func Die():
+	gm.UpdateDataItem("LifetimeShipsKilled", 1)
 	currentDestroyTime = 0
 	$ShipSprite.visible = false
 	$ThrustParticles.visible = false

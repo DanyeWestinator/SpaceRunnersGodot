@@ -350,23 +350,71 @@ texture = ExtResource( 19 )
 visible = false
 
 [node name="Restart" type="TouchScreenButton" parent="Player/UIManager/PlayPause/PauseGUI"]
-position = Vector2( -3, 536 )
+position = Vector2( -13, 624 )
 scale = Vector2( 3, 3 )
 normal = ExtResource( 16 )
 pressed = ExtResource( 16 )
 shape = SubResource( 9 )
 
 [node name="MainMenu" type="Button" parent="Player/UIManager/PlayPause/PauseGUI"]
-margin_left = -96.0
-margin_top = 663.0
-margin_right = 52.0
-margin_bottom = 683.0
+margin_left = -98.0
+margin_top = 729.0
+margin_right = 50.0
+margin_bottom = 749.0
 rect_scale = Vector2( 2, 2 )
 custom_fonts/font = SubResource( 12 )
 custom_styles/hover = SubResource( 14 )
 custom_styles/pressed = SubResource( 15 )
 custom_styles/normal = SubResource( 13 )
 text = "Main Menu"
+
+[node name="StatsToggle" type="Button" parent="Player/UIManager/PlayPause/PauseGUI"]
+margin_left = -106.0
+margin_top = 564.0
+margin_right = 42.0
+margin_bottom = 584.0
+rect_scale = Vector2( 2, 2 )
+custom_fonts/font = SubResource( 12 )
+custom_styles/hover = SubResource( 14 )
+custom_styles/pressed = SubResource( 15 )
+custom_styles/normal = SubResource( 13 )
+text = "Open Stats"
+
+[node name="Statpage" type="Node2D" parent="Player/UIManager"]
+visible = false
+
+[node name="MaxDistance" type="Label" parent="Player/UIManager/Statpage"]
+margin_left = -44.0
+margin_top = -600.0
+margin_right = 290.0
+margin_bottom = -543.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "Best 
+Distance: MAXkm"
+
+[node name="AsteroidCounter" type="Label" parent="Player/UIManager/Statpage"]
+margin_left = -47.0
+margin_top = -518.0
+margin_right = 253.0
+margin_bottom = -461.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "Asteroids
+Annihilated:
+0 And Counting!"
+autowrap = true
+
+[node name="EnemyCounter" type="Label" parent="Player/UIManager/Statpage"]
+margin_left = -50.0
+margin_top = -414.0
+margin_right = 250.0
+margin_bottom = -357.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "Enemies Vanquished:
+0 And Counting!"
+autowrap = true
 
 [node name="BackgroundParent" type="Node" parent="."]
 script = ExtResource( 3 )
@@ -405,3 +453,4 @@ timeToShoot = 1.0
 [connection signal="button_down" from="Player/UIManager/PlayPause/PlayPauseParent/PlayPauseButton" to="Player/UIManager" method="UpdatePause"]
 [connection signal="pressed" from="Player/UIManager/PlayPause/PauseGUI/Restart" to="." method="_on_Restart_pressed"]
 [connection signal="button_up" from="Player/UIManager/PlayPause/PauseGUI/MainMenu" to="." method="_on_MainMenu_button_up"]
+[connection signal="button_up" from="Player/UIManager/PlayPause/PauseGUI/StatsToggle" to="Player/UIManager" method="_on_toggle_stats"]

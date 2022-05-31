@@ -13,6 +13,8 @@ var regex = RegEx.new()
 
 export (Array, Texture) var playPauseButtons
 
+var isStatpage = false
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -21,6 +23,10 @@ func _ready():
 	baseTexts[$IngameGUI/ShotsLeft.name] = $IngameGUI/ShotsLeft.text
 	baseTexts[$IngameGUI/BoostsLeft.name] = $IngameGUI/BoostsLeft.text
 	baseTexts[$DeathGUI/MaxDistance.name] = $DeathGUI/MaxDistance.text
+	baseTexts[$Statpage/MaxDistance.name] = $Statpage/MaxDistance.text
+	baseTexts[$Statpage/AsteroidCounter.name] = $Statpage/AsteroidCounter.text
+	baseTexts[$Statpage/EnemyCounter.name] = $Statpage/EnemyCounter.text
+	
 	InitState(gm.currentState)
 	
 	lastState = gm.currentState
@@ -110,3 +116,27 @@ func UpdatePause():
 		gm.currentState = gm.States.Play
 
 	
+
+
+
+func _on_toggle_stats():
+	if isStatpage == false:
+		isStatpage = false
+		$Statpage.visible = true
+		var text = baseTexts[$Statpage/MaxDistance.name]
+		text = text.replace("MAX", gm.GetDataItem("maxDistance"))
+		$Statpage/MaxDistance.text = text
+		text = baseTexts[$Statpage/AsteroidCounter.name]
+		text = text.replace("0", int(gm.GetDataItem("asteroidsDestroyed")))
+		$Statpage/AsteroidCounter.text = text
+		text = baseTexts[$Statpage/EnemyCounter.name]
+		text = text.replace("0", gm.GetDataItem("LifetimeShipsKilled"))
+		$Statpage/EnemyCounter.text = text
+	else:
+		isStatpage = true
+		$Statpage.visible = false
+	if gm.currentState == gm.States.Pause:
+		if isStatpage:
+			$PlayPause/PauseGUI/StatsToggle.text = "Close Stats"
+		else:
+			$PlayPause/PauseGUI/StatsToggle.text = "Open Stats"
