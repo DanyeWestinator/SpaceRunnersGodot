@@ -14,18 +14,21 @@ var regex = RegEx.new()
 export (Array, Texture) var playPauseButtons
 
 var isStatpage = false
+var last_i = 0
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	baseTexts[$IngameGUI/DistanceLabel.name] = $IngameGUI/DistanceLabel.text
-	baseTexts[$IngameGUI/SpeedLabel.name] = $IngameGUI/SpeedLabel.text
-	baseTexts[$IngameGUI/ShotsLeft.name] = $IngameGUI/ShotsLeft.text
-	baseTexts[$IngameGUI/BoostsLeft.name] = $IngameGUI/BoostsLeft.text
-	baseTexts[$DeathGUI/MaxDistance.name] = $DeathGUI/MaxDistance.text
-	baseTexts[$Statpage/MaxDistance.name] = $Statpage/MaxDistance.text
-	baseTexts[$Statpage/AsteroidCounter.name] = $Statpage/AsteroidCounter.text
-	baseTexts[$Statpage/EnemyCounter.name] = $Statpage/EnemyCounter.text
+	baseTexts[$IngameGUI/DistanceLabel] = $IngameGUI/DistanceLabel.text
+	baseTexts[$IngameGUI/SpeedLabel] = $IngameGUI/SpeedLabel.text
+	baseTexts[$IngameGUI/ShotsLeft] = $IngameGUI/ShotsLeft.text
+	baseTexts[$IngameGUI/BoostsLeft] = $IngameGUI/BoostsLeft.text
+	baseTexts[$DeathGUI/MaxDeathDistance] = $DeathGUI/MaxDeathDistance.text
+	baseTexts[$Statpage/MaxDistance] = $Statpage/MaxDistance.text
+	baseTexts[$Statpage/AsteroidCounter] = $Statpage/AsteroidCounter.text
+	baseTexts[$Statpage/EnemyCounter] = $Statpage/EnemyCounter.text
+	
+	baseTexts[$Statpage/EnemyCounter] = $Statpage/EnemyCounter.text
 	
 	InitState(gm.currentState)
 	
@@ -43,7 +46,8 @@ func InitState(state):
 		if gm.gamedata.has("maxDistance") == false:
 			gm.gamedata["maxDistance"] = 0.0
 		var maxDistance = gm.gamedata["maxDistance"]
-		var distanceText = baseTexts[$DeathGUI/MaxDistance.name]
+		var distanceText = baseTexts[$DeathGUI/MaxDeathDistance]
+
 		if player.distanceTravelled > maxDistance:
 			gm.gamedata["maxDistance"] = player.distanceTravelled
 			gm.UpdateGameData()
@@ -51,7 +55,7 @@ func InitState(state):
 			distanceText += "\nNew Best!"
 		distanceText = distanceText.replace("DIST", str(int(player.distanceTravelled)))
 		distanceText = distanceText.replace("MAX", str(int(maxDistance)))
-		$DeathGUI/MaxDistance.text = distanceText
+		$DeathGUI/MaxDeathDistance.text = distanceText
 		var count = str(player.currentAsteroidsDestroyed)
 		$DeathGUI/AsteroidsCounter.text = count
 		$PlayPause.visible = false
@@ -87,32 +91,44 @@ func _process(delta):
 		UpdateIngameGUI(gm.currentState)
 	lastState = gm.currentState
 
-func UpdateIngameGUI(state):
-	var distanceText = baseTexts["DistanceLabel"].replace("0", str(int(player.distanceTravelled)))
+func UpdateIngameGUI(_state):
+	var distanceText = baseTexts[$IngameGUI/DistanceLabel].replace("0", str(int(player.distanceTravelled)))
 	$IngameGUI/DistanceLabel.text = distanceText
-	var speedText = baseTexts["SpeedLabel"].replace("0", str(int(player.ForwardSpeed)))
+	var speedText = baseTexts[$IngameGUI/SpeedLabel].replace("0", str(int(player.ForwardSpeed)))
 	$IngameGUI/SpeedLabel.text = speedText
 	var boostsString = "Boost: "
 	if player.isBoosting == false:
 		for i in range(player.BoostTextLen):
+			break
 			boostsString += player.BoostChar
-	else:
-		for i in range(int(player.BoostTextLen * (float(player.currentBoostTime) / player.BoostTime))):
-			boostsString += player.BoostChar
+	var j = float(player.timeSinceBoost) / player.BoostCooldown
+	var ratio = float(player.timeSinceBoost) / player.BoostCooldown
+	j = int(player.BoostParticleSubdivisions * j)
+	if j != last_i:# and ratio <= 1
+		var shield = player.get_node("ShieldParticles")
+		#shield.amount = int(player.maxBoostParticleAmount * (float(j) /  
+		print("Updating i to: ", j, "\t", ratio)
+	last_i = j
+	for i in range(int(player.BoostTextLen * (float(player.timeSinceBoost) / player.BoostCooldown))):
+		if i >= player.BoostTextLen:
+			break
+			print("too long?")
+		boostsString += player.BoostChar
 	$IngameGUI/BoostsLeft.text = boostsString
-	$IngameGUI/ShotsLeft.text = baseTexts["ShotsLeft"]
-	for i in range(int(player.currentShotTime / player.ShotRecharge)):
+	$IngameGUI/ShotsLeft.text = baseTexts[$IngameGUI/ShotsLeft]
+	for _i in range(int(player.currentShotTime / player.ShotRecharge)):
 		$IngameGUI/ShotsLeft.text += player.ShotsChar
 		
 func UpdatePause():
 	#print("Pause Updating!")
 	if Input.is_action_just_pressed("primary_tap"):
-		print("Primary just tapped")
+
 		return
 	var state = gm.currentState
 	if state == gm.States.Play:
 		gm.currentState = gm.States.Pause
 	elif state == gm.States.Pause:
+		_close_stats()
 		gm.currentState = gm.States.Play
 
 	
@@ -121,22 +137,26 @@ func UpdatePause():
 
 func _on_toggle_stats():
 	if isStatpage == false:
-		isStatpage = false
+		isStatpage = true
+
 		$Statpage.visible = true
-		var text = baseTexts[$Statpage/MaxDistance.name]
-		text = text.replace("MAX", gm.GetDataItem("maxDistance"))
+		var text = baseTexts[$Statpage/MaxDistance]
+		text = text.replace("MAX", int(gm.GetDataItem("maxDistance")))
 		$Statpage/MaxDistance.text = text
-		text = baseTexts[$Statpage/AsteroidCounter.name]
+		text = baseTexts[$Statpage/AsteroidCounter]
 		text = text.replace("0", int(gm.GetDataItem("asteroidsDestroyed")))
 		$Statpage/AsteroidCounter.text = text
-		text = baseTexts[$Statpage/EnemyCounter.name]
+		text = baseTexts[$Statpage/EnemyCounter]
 		text = text.replace("0", gm.GetDataItem("LifetimeShipsKilled"))
 		$Statpage/EnemyCounter.text = text
 	else:
-		isStatpage = true
-		$Statpage.visible = false
+		_close_stats()
 	if gm.currentState == gm.States.Pause:
 		if isStatpage:
 			$PlayPause/PauseGUI/StatsToggle.text = "Close Stats"
 		else:
 			$PlayPause/PauseGUI/StatsToggle.text = "Open Stats"
+func _close_stats():
+	$Statpage.visible = false
+	isStatpage = false
+	$PlayPause/PauseGUI/StatsToggle.text = "Open Stats"

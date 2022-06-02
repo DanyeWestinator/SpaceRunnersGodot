@@ -30,7 +30,13 @@ export (int) var BoostScale = 4
 export (float) var BoostTime = 1
 export (float) var BoostCooldown = 2
 export (String) var BoostChar = ">"
+export (Color) var boostBaseColor = Color(0, 0, 1, 1)
+export (Color) var boostColor = Color(1, 1, 0, 1)
+export (int) var BoostParticleSubdivisions = 5
+var maxBoostParticleAmount
+var lastBoost_i = 0
 var currentBoostTime = 0
+var timeSinceBoost = 0
 var isBoosting = false
 
 #Speed increases every so often
@@ -78,8 +84,9 @@ func _ready():
 	lastPos = position
 	startPlayerPos = position
 	startVelocity = ForwardSpeed
-	
 	currentShotTime = ShotRecharge * MaxShots
+	maxBoostParticleAmount = $ShieldParticles.amount
+	
 
 func _unhandled_input(event):
 	#handling swipe logic
@@ -136,7 +143,11 @@ func _process(delta):
 	if currentShotTime > (MaxShots * ShotRecharge):
 		currentShotTime = MaxShots * ShotRecharge
 	
-	
+	for i in range(3):
+		var left = int(currentShotTime / ShotRecharge)
+		$ShotCharge.get_child(i).visible = (i < left and gm.currentState == gm.States.Play)
+		
+
 	
 	lastPos = position
 	
@@ -147,9 +158,31 @@ func _process(delta):
 		UpdateSpeed(speedupScale)
 	
 func BoostLogic(delta):
+	timeSinceBoost += delta
 	if isBoosting:
 		currentBoostTime += delta
+	var i = int(BoostParticleSubdivisions * float(timeSinceBoost) / BoostCooldown) 
+	if timeSinceBoost >= BoostCooldown:
+		i = BoostParticleSubdivisions
+	if i != lastBoost_i:
+		var amount = int((float(i) / BoostParticleSubdivisions) * maxBoostParticleAmount)
+		#print(amount, "\t", i)
+		#$ShieldParticles.amount = amount
+		if isBoosting and false:
+			print("is boosting")
+			$ShieldParticles.amount = maxBoostParticleAmount * 3
+			#$ShieldParticles.modulate = boostColor
+		#print($ShieldParticles.amount, "\t", i, "\t", isBoosting)
+		if i == BoostParticleSubdivisions and false:
+			$ShieldParticles.modulate = boostColor
+			#print("turning on")
+		else:
+			pass
+			#print("turning off ", boostBaseColor, "\t", $ShieldParticles.amount)
+			#$ShieldParticles.modulate = boostBaseColor
+	lastBoost_i = i
 	if currentBoostTime >= BoostTime:
+		timeSinceBoost = 0
 		isBoosting = false
 		currentBoostTime = 0
 		UpdateSpeed((1.0 / BoostScale))
@@ -194,7 +227,7 @@ func UpdateLabels():
 	$Labels/SpeedLabel.text = speedText
 	var boostsString = "Boost: "
 	if isBoosting == false:
-		for i in range(BoostTextLen):
+		for _i in range(BoostTextLen):
 			boostsString += BoostChar
 	else:
 		for i in range(int(BoostTextLen * (float(currentBoostTime) / BoostTime))):
@@ -205,18 +238,21 @@ func UpdateLabels():
 func _on_Player_area_entered(area):
 	if ("Bolt" in area.name):
 		return
+	if isBoosting and "Asteroid" in area.name:
+		area.Die()
+		return
 	Die()
 
 func Die():
 	#Can't die if already dead
-	if (gm.currentState != gm.States.Play):
+	if (gm.currentState != gm.States.Play or isBoosting):
 		return
 	gm.currentState = gm.States.Dead
 	$SpaceshipSprite.visible = false
 	$ThrustParticles.visible = false
 	$DeathParticleExplosion.emitting = true
 	$Hitbox.disabled = true
-	
+	$ShotCharge.visible = false
 	#get_node("../AsteroidSpawner").SpawnAsteroids = false
 	
 	
@@ -233,7 +269,10 @@ func reset():
 	ForwardSpeed = startVelocity
 	currentShotTime = ShotRecharge * MaxShots
 	$Hitbox.disabled = false
-	#get_node("../AsteroidSpawner").SpawnAsteroids = true
+	$ShotCharge.visible = true
+	currentShotTime = ShotRecharge * MaxShots
+	timeSinceBoost = BoostCooldown
+
 func _on_Left_pressed():
 	if gm.currentState == gm.States.Play:
 		if nextColumn > 1:
@@ -255,7 +294,8 @@ func _on_Right_pressed():
 
 func _on_Boost_pressed():
 	if gm.currentState == gm.States.Play:
-		if isBoosting == false:
+		if isBoosting == false and timeSinceBoost >= BoostCooldown:
+			timeSinceBoost = 0
 			UpdateSpeed(BoostScale)
 			isBoosting = true
 	
@@ -271,9 +311,10 @@ func _on_color_pressed(extra_arg_0):
 	#gm.UpdateGameData()
 	
 func _shoot():
+	
 	if currentShotTime < ShotRecharge or gm.currentState != gm.States.Play:
 		return
-		
+	
 	currentShotTime -= ShotRecharge
 	
 	var bolt = load("res://Scenes/LaserBolt.tscn").instance()

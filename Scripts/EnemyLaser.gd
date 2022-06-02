@@ -22,4 +22,4 @@ func _on_BoltCollider_area_entered(area):
 		self.queue_free()
 	if "Asteroid" in area.name:
 		area.Die()
-		print("Enemy hit asteroid")
+

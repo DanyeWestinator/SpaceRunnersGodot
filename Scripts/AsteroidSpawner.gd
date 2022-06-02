@@ -71,7 +71,7 @@ func Serialize():
 func _process(delta):
 	#if gm.currentState == gm.States.Play:
 	currentTime += delta
-	if (currentTime > maxTime and SpawnAsteroids == true):
+	if (currentTime > maxTime and SpawnAsteroids == true and gm.currentState == gm.States.Play):
 		currentTime = 0
 		maxTime = random.randf_range(AsteroidDelay.x, AsteroidDelay.y)
 		SpawnAsteroid()

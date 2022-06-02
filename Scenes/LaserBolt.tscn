@@ -4,8 +4,8 @@
 [ext_resource path="res://Scripts/LaserBolt.gd" type="Script" id=2]
 
 [sub_resource type="CapsuleShape2D" id=1]
-radius = 0.5
-height = 0.5
+radius = 0.324
+height = 0.0
 
 [node name="Bolt" type="Sprite"]
 modulate = Color( 1, 0, 0, 1 )
@@ -15,7 +15,7 @@ script = ExtResource( 2 )
 moveSpeed = 6.0
 
 [node name="BoltCollider" type="Area2D" parent="."]
-position = Vector2( 0, 0.5 )
+position = Vector2( 0, 0.002 )
 gravity_vec = Vector2( 0, 0 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BoltCollider"]

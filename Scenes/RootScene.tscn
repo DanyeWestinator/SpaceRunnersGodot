@@ -61,7 +61,6 @@ font_data = ExtResource( 1 )
 [node name="Root" type="Node2D"]
 script = ExtResource( 6 )
 starTexture = ExtResource( 5 )
-DisplayColumns = true
 gameDataPath = "user://base_gamedata.txt"
 currentState = 2
 
@@ -72,7 +71,9 @@ TimeToMove = 0.02
 ShipColor = Color( 0, 1, 0, 1 )
 ForwardSpeed = 128.0
 DistanceScalar = 16.0
-BoostCooldown = 5.0
+BoostTime = 2.0
+BoostCooldown = 10.0
+BoostParticleSubdivisions = 14
 timeToSpeedup = 2.0
 speedupScale = 1.02
 laserMoveSpeed = 12.0
@@ -250,7 +251,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MaxDistance" type="Label" parent="Player/UIManager/DeathGUI"]
+[node name="MaxDeathDistance" type="Label" parent="Player/UIManager/DeathGUI"]
 margin_left = -2.0
 margin_top = -388.0
 margin_right = 332.0

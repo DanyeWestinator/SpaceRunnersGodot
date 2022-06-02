@@ -14,6 +14,8 @@ var laserBoltColor
 var laserBoltScale
 var i
 
+export (float) var maxShotChargeSize = 4
+
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -23,7 +25,6 @@ var i
 func _ready():
 	var tts = timeToShoot
 	currentShotTime = 0#timeToShoot * 0.7
-	print(currentShotTime, "\t" , tts)
 
 func Die():
 	gm.UpdateDataItem("LifetimeShipsKilled", 1)
@@ -32,6 +33,7 @@ func Die():
 	$ThrustParticles.visible = false
 	$DeathParticles.emitting = true
 	$EnemyArea.queue_free()
+	$FirePoints.visible = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -44,32 +46,39 @@ func _process(delta):
 	if currentShotTime >= timeToShoot and currentDestroyTime < 0 and gm.currentState == gm.States.Play:
 		currentShotTime = 0
 		Shoot()
-	
+	_update_shot_size()
 	if currentDestroyTime >= 0:
 		currentDestroyTime += delta
 		if currentDestroyTime >= destroyDelay:
 			clearShots()
 			self.queue_free()
 func clearShots():
+	var i = 0
 	for shot in shots:
-				if weakref(shot).get_ref():
-					shot.queue_free()
-
+		if weakref(shot).get_ref():
+			i += 1
+			shot.queue_free()
+func _update_shot_size():
+	var scale = currentShotTime / timeToShoot * maxShotChargeSize
+	if gm.currentState != gm.States.Play:
+		scale = 0
+	scale = Vector2(scale, scale)
+	
+	$FirePoints/Left/BoltCharge.scale = scale
+	$FirePoints/Right/BoltCharge.scale = scale
+	
 func _on_EnemyArea_area_entered(area):
 	if "Player" in area.name and gm.currentState == gm.States.Play:
 		Die()
 func Shoot():
 	for i in range($FirePoints.get_child_count()):
+		#print($FirePoints/Left/BoltCharge.global_position, "\t", player.global_position, "\t", global_position)
 		var bolt = laserPrefab.instance()
 		var pos = $FirePoints.get_child(i).global_position
-		pos = self.global_position - pos
+		#pos = self.global_position - pos
 		shots.append(bolt)
 		bolt.Create(gm, player, pos, laserBoltSpeed,
 		laserBoltScale, laserBoltColor, -1)
 		bolt.firedBy = "Enemy"
-		#$FirePoints.add_child(bolt)
-		#add_child(bolt)
-		#bolt.global_position = $FirePoints.get_child(i).global_position
-		#bolt.position = $FirePoints.get_child(i).position
-		#bolt.player = player
-
+		$FirePoints/Left/ShotParticles.emitting = true
+		$FirePoints/Right/ShotParticles.emitting = true
