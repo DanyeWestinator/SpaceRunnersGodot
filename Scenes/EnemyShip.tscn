@@ -61,7 +61,7 @@ position = Vector2( -22, 37.475 )
 [node name="BoltCharge" type="Sprite" parent="FirePoints/Left"]
 modulate = Color( 0.027451, 0.0235294, 1, 1 )
 position = Vector2( 0, -26.475 )
-scale = Vector2( 5, 5 )
+scale = Vector2( 10, 10 )
 texture = ExtResource( 4 )
 
 [node name="ShotParticles" parent="FirePoints/Left" instance=ExtResource( 2 )]
@@ -78,7 +78,7 @@ position = Vector2( 22, 37.475 )
 [node name="BoltCharge" type="Sprite" parent="FirePoints/Right"]
 modulate = Color( 0, 0, 1, 1 )
 position = Vector2( 0, -26.475 )
-scale = Vector2( 5, 5 )
+scale = Vector2( 10, 10 )
 texture = ExtResource( 4 )
 
 [node name="ShotParticles" parent="FirePoints/Right" instance=ExtResource( 2 )]

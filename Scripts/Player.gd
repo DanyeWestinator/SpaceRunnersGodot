@@ -32,6 +32,7 @@ export (float) var BoostCooldown = 2
 export (String) var BoostChar = ">"
 export (Color) var boostBaseColor = Color(0, 0, 1, 1)
 export (Color) var boostColor = Color(1, 1, 0, 1)
+export (Color) var boostChargingColor = Color(1, 1, 1, 1)
 export (int) var BoostParticleSubdivisions = 5
 var maxBoostParticleAmount
 var lastBoost_i = 0
@@ -161,25 +162,18 @@ func BoostLogic(delta):
 	timeSinceBoost += delta
 	if isBoosting:
 		currentBoostTime += delta
-	var i = int(BoostParticleSubdivisions * float(timeSinceBoost) / BoostCooldown) 
-	if timeSinceBoost >= BoostCooldown:
-		i = BoostParticleSubdivisions
+	var i = int(BoostTextLen * (float(timeSinceBoost) / BoostCooldown))
+	if i > BoostTextLen:
+		i = BoostTextLen
 	if i != lastBoost_i:
-		var amount = int((float(i) / BoostParticleSubdivisions) * maxBoostParticleAmount)
-		#print(amount, "\t", i)
-		#$ShieldParticles.amount = amount
-		if isBoosting and false:
-			print("is boosting")
-			$ShieldParticles.amount = maxBoostParticleAmount * 3
-			#$ShieldParticles.modulate = boostColor
-		#print($ShieldParticles.amount, "\t", i, "\t", isBoosting)
-		if i == BoostParticleSubdivisions and false:
-			$ShieldParticles.modulate = boostColor
-			#print("turning on")
-		else:
-			pass
-			#print("turning off ", boostBaseColor, "\t", $ShieldParticles.amount)
-			#$ShieldParticles.modulate = boostBaseColor
+		var count = float(i) / BoostTextLen
+		count = int(count * float(maxBoostParticleAmount))
+		$ShieldParticles.amount = count
+		if i == BoostTextLen:
+			$ShieldParticles.color = boostBaseColor
+		elif isBoosting == false:
+			$ShieldParticles.color = boostChargingColor
+		print("new c is ", count)
 	lastBoost_i = i
 	if currentBoostTime >= BoostTime:
 		timeSinceBoost = 0
@@ -298,6 +292,8 @@ func _on_Boost_pressed():
 			timeSinceBoost = 0
 			UpdateSpeed(BoostScale)
 			isBoosting = true
+			$ShieldParticles.amount = maxBoostParticleAmount * 2
+			$ShieldParticles.color = boostColor
 	
 func _on_color_pressed(extra_arg_0):
 	ShipColor = extra_arg_0

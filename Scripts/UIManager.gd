@@ -41,6 +41,7 @@ func InitState(state):
 	if (state == gm.States.Play):
 		$IngameGUI.visible = true
 		$PlayPause.visible = true
+		player.get_node("ShieldParticles").visible = true
 	if (state == gm.States.Dead):
 		$DeathGUI.visible = true
 		if gm.gamedata.has("maxDistance") == false:
@@ -72,6 +73,7 @@ func CloseState(state):
 		$MainMenuGUI.visible = false
 	if state == gm.States.Play:
 		$IngameGUI.visible = false
+		player.get_node("ShieldParticles").visible = false
 	if state == gm.States.Dead:
 		$DeathGUI.visible = false
 		$PlayPause.visible = false
@@ -80,6 +82,7 @@ func CloseState(state):
 	if state == gm.States.Pause:
 		$PlayPause/PlayPauseParent/Sprite.texture = playPauseButtons[0]
 		$PlayPause/PauseGUI.visible = false
+		_close_stats()
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -97,23 +100,13 @@ func UpdateIngameGUI(_state):
 	var speedText = baseTexts[$IngameGUI/SpeedLabel].replace("0", str(int(player.ForwardSpeed)))
 	$IngameGUI/SpeedLabel.text = speedText
 	var boostsString = "Boost: "
-	if player.isBoosting == false:
-		for i in range(player.BoostTextLen):
-			break
-			boostsString += player.BoostChar
-	var j = float(player.timeSinceBoost) / player.BoostCooldown
-	var ratio = float(player.timeSinceBoost) / player.BoostCooldown
-	j = int(player.BoostParticleSubdivisions * j)
-	if j != last_i:# and ratio <= 1
-		var shield = player.get_node("ShieldParticles")
-		#shield.amount = int(player.maxBoostParticleAmount * (float(j) /  
-		print("Updating i to: ", j, "\t", ratio)
-	last_i = j
+	
 	for i in range(int(player.BoostTextLen * (float(player.timeSinceBoost) / player.BoostCooldown))):
 		if i >= player.BoostTextLen:
 			break
 			print("too long?")
 		boostsString += player.BoostChar
+
 	$IngameGUI/BoostsLeft.text = boostsString
 	$IngameGUI/ShotsLeft.text = baseTexts[$IngameGUI/ShotsLeft]
 	for _i in range(int(player.currentShotTime / player.ShotRecharge)):
