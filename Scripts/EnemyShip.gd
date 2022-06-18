@@ -53,11 +53,16 @@ func _process(delta):
 			clearShots()
 			self.queue_free()
 func clearShots():
+	var blank = 0
 	var i = 0
 	for shot in shots:
 		if weakref(shot).get_ref():
 			i += 1
 			shot.queue_free()
+		else:
+			blank += 1
+	#print(i, " shots cleared, ", blank, " blanks")
+	shots = []
 func _update_shot_size():
 	var scale = currentShotTime / timeToShoot * maxShotChargeSize
 	if gm.currentState != gm.States.Play:

@@ -32,7 +32,7 @@ export (float) var BoostCooldown = 2
 export (String) var BoostChar = ">"
 export (Color) var boostBaseColor = Color(0, 0, 1, 1)
 export (Color) var boostColor = Color(1, 1, 0, 1)
-export (Color) var boostChargingColor = Color(1, 1, 1, 1)
+export (Array, Color) var boostChargingColor = [Color(1, 1, 1, 1)]
 export (int) var BoostParticleSubdivisions = 5
 var maxBoostParticleAmount
 var lastBoost_i = 0
@@ -162,24 +162,32 @@ func BoostLogic(delta):
 	timeSinceBoost += delta
 	if isBoosting:
 		currentBoostTime += delta
-	var i = int(BoostTextLen * (float(timeSinceBoost) / BoostCooldown))
-	if i > BoostTextLen:
-		i = BoostTextLen
+	var size = boostChargingColor.size()
+	var i = int(size * (float(timeSinceBoost) / BoostCooldown))
+	if i > size:
+		i = size
 	if i != lastBoost_i:
-		var count = float(i) / BoostTextLen
+		var count = float(i) / size
 		count = int(count * float(maxBoostParticleAmount))
+		if count == 0 and isBoosting == false:
+			count = 1
 		$ShieldParticles.amount = count
-		if i == BoostTextLen:
+
+		if i == size:
 			$ShieldParticles.color = boostBaseColor
 		elif isBoosting == false:
-			$ShieldParticles.color = boostChargingColor
-		print("new c is ", count)
+			$ShieldParticles.color = boostChargingColor[i]
+		#print("new c is ", count)
 	lastBoost_i = i
+	#end boost logic
 	if currentBoostTime >= BoostTime:
 		timeSinceBoost = 0
 		isBoosting = false
 		currentBoostTime = 0
 		UpdateSpeed((1.0 / BoostScale))
+		$ShieldParticles.color = boostChargingColor[0]
+		$ShieldParticles.amount = 1
+
 	
 func move(delta) -> void:
 	
@@ -230,6 +238,20 @@ func UpdateLabels():
 	#$Labels/Temp.text = "(" + str(int(global_position.x)) + ", " + str(int(global_position.y)) + ")"
 
 func _on_Player_area_entered(area):
+	if isBoosting and ("Bolt" in area.name) == false:
+		var explosion = load("res://Scenes/DeathParticles.tscn").instance()
+		explosion.timedDestroy = true
+		$BoostExplosions.add_child(explosion)
+		explosion.position = Vector2.ZERO
+		explosion.emitting = true
+		explosion.visible = true
+		if "Enemy" in area.name:
+			explosion.color = area.get_node("../ShipSprite").modulate
+		elif "Asteroid" in area.name:
+			#print(area.get_child(0))
+			explosion.color = area.get_child(0).modulate
+		else:
+			explosion.color = area.modulate
 	if ("Bolt" in area.name):
 		return
 	if isBoosting and "Asteroid" in area.name:

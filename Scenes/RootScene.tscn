@@ -75,6 +75,7 @@ BoostTime = 2.0
 BoostCooldown = 10.0
 boostBaseColor = Color( 0.298039, 0.298039, 0.827451, 1 )
 boostColor = Color( 0.901961, 0.682353, 0.470588, 1 )
+boostChargingColor = [ Color( 1, 1, 1, 1 ), Color( 0.764706, 0.764706, 0.882353, 1 ), Color( 0.607843, 0.607843, 0.886275, 1 ), Color( 0.411765, 0.411765, 0.847059, 1 ) ]
 BoostParticleSubdivisions = 14
 timeToSpeedup = 2.0
 speedupScale = 1.02

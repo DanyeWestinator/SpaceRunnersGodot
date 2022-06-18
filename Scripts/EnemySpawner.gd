@@ -37,7 +37,7 @@ func reset():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if gm.currentState == gm.States.Play:
+	if gm.currentState != gm.States.Pause:
 		currentShipTime += delta
 		if currentShipTime >= ShipSpawnTime:
 			SpawnShip()
