@@ -149,4 +149,5 @@ func _on_MainMenu_button_up():
 	currentState = States.MainMenu
 	$Player/SpaceshipSprite.visible = true
 	$Player/ThrustParticles.visible = true
+	reset()
 

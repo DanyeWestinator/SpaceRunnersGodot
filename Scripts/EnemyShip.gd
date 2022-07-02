@@ -85,5 +85,6 @@ func Shoot():
 		bolt.Create(gm, player, pos, laserBoltSpeed,
 		laserBoltScale, laserBoltColor, -1)
 		bolt.firedBy = "Enemy"
+		bolt.gm = gm
 		$FirePoints/Left/ShotParticles.emitting = true
 		$FirePoints/Right/ShotParticles.emitting = true

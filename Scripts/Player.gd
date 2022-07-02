@@ -57,6 +57,7 @@ export (int) var MaxShots = 3
 export (float) var ShotRecharge = 1
 var currentShotTime
 var currentAsteroidsDestroyed = 0
+var currentEnemiesDestroyed = 0 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -247,9 +248,11 @@ func _on_Player_area_entered(area):
 		explosion.visible = true
 		if "Enemy" in area.name:
 			explosion.color = area.get_node("../ShipSprite").modulate
+			currentEnemiesDestroyed += 1
 		elif "Asteroid" in area.name:
-			#print(area.get_child(0))
+
 			explosion.color = area.get_child(0).modulate
+			currentAsteroidsDestroyed += 1
 		else:
 			explosion.color = area.modulate
 	if ("Bolt" in area.name):
@@ -280,6 +283,7 @@ func reset():
 	lastPos = position
 	distanceTravelled = 0.0
 	currentAsteroidsDestroyed = 0
+	currentEnemiesDestroyed = 0
 	$SpaceshipSprite.visible = true
 	$ThrustParticles.visible = true
 	ForwardSpeed = startVelocity
@@ -288,6 +292,9 @@ func reset():
 	$ShotCharge.visible = true
 	currentShotTime = ShotRecharge * MaxShots
 	timeSinceBoost = BoostCooldown
+	nextColumn = 3
+	$UIManager/IngameGUI/Right.visible = true
+	$UIManager/IngameGUI/Left.visible = true
 
 func _on_Left_pressed():
 	if gm.currentState == gm.States.Play:

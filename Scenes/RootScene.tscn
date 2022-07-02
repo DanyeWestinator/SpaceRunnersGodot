@@ -65,7 +65,7 @@ gameDataPath = "user://base_gamedata.txt"
 currentState = 2
 
 [node name="Player" parent="." instance=ExtResource( 4 )]
-position = Vector2( 243, 887 )
+position = Vector2( 243, 883 )
 z_index = 2
 TimeToMove = 0.02
 ShipColor = Color( 0, 1, 0, 1 )
@@ -242,10 +242,10 @@ visible = false
 
 [node name="YouDied" type="Label" parent="Player/UIManager/DeathGUI"]
 modulate = Color( 1, 0, 0, 1 )
-margin_left = -35.0
-margin_top = -523.0
-margin_right = 299.0
-margin_bottom = -481.0
+margin_left = -38.0
+margin_top = -596.0
+margin_right = 296.0
+margin_bottom = -554.0
 rect_scale = Vector2( 3, 3 )
 custom_fonts/font = SubResource( 6 )
 text = "YOU DIED!
@@ -255,10 +255,10 @@ __meta__ = {
 }
 
 [node name="MaxDeathDistance" type="Label" parent="Player/UIManager/DeathGUI"]
-margin_left = -2.0
-margin_top = -388.0
-margin_right = 332.0
-margin_bottom = -331.0
+margin_left = -10.0
+margin_top = -500.0
+margin_right = 324.0
+margin_bottom = -443.0
 rect_scale = Vector2( 1.4, 2 )
 custom_fonts/font = SubResource( 6 )
 text = "Distance: DISTkm
@@ -270,10 +270,10 @@ __meta__ = {
 }
 
 [node name="AsteroidsLabel" type="Label" parent="Player/UIManager/DeathGUI"]
-margin_left = -31.0
-margin_top = -209.0
-margin_right = 303.0
-margin_bottom = -152.0
+margin_left = -53.0
+margin_top = -345.0
+margin_right = 281.0
+margin_bottom = -288.0
 rect_scale = Vector2( 1.4, 2 )
 custom_fonts/font = SubResource( 6 )
 text = "Asteroids 
@@ -284,14 +284,65 @@ __meta__ = {
 }
 
 [node name="AsteroidsCounter" type="Label" parent="Player/UIManager/DeathGUI"]
-margin_left = 212.0
-margin_top = -189.0
-margin_right = 327.0
-margin_bottom = -132.0
+margin_left = 198.0
+margin_top = -317.0
+margin_right = 313.0
+margin_bottom = -260.0
 rect_scale = Vector2( 1.4, 2 )
 custom_fonts/font = SubResource( 6 )
 text = "100"
 autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NewBestAsteroids" type="Label" parent="Player/UIManager/DeathGUI"]
+margin_left = 190.0
+margin_top = -274.0
+margin_right = 524.0
+margin_bottom = -217.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "New Best!"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EnemiesText" type="Label" parent="Player/UIManager/DeathGUI"]
+margin_left = -44.0
+margin_top = -198.0
+margin_right = 290.0
+margin_bottom = -141.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "Enemies
+Vanquised: "
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EnemyCount" type="Label" parent="Player/UIManager/DeathGUI"]
+margin_left = 200.0
+margin_top = -199.0
+margin_right = 315.0
+margin_bottom = -142.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "100"
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NewBestEnemies" type="Label" parent="Player/UIManager/DeathGUI"]
+visible = false
+margin_left = 186.0
+margin_top = -151.0
+margin_right = 520.0
+margin_bottom = -94.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "New Best!"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -417,6 +468,18 @@ margin_bottom = -357.0
 rect_scale = Vector2( 1.4, 2 )
 custom_fonts/font = SubResource( 6 )
 text = "Enemies Vanquished:
+0 And Counting!"
+autowrap = true
+
+[node name="EnemyAsteroidCounter" type="Label" parent="Player/UIManager/Statpage"]
+margin_left = -52.0
+margin_top = -342.0
+margin_right = 248.0
+margin_bottom = -285.0
+rect_scale = Vector2( 1.4, 2 )
+custom_fonts/font = SubResource( 6 )
+text = "Asteroids destroyed
+(by enemies):
 0 And Counting!"
 autowrap = true
 

@@ -29,6 +29,7 @@ func _ready():
 	baseTexts[$Statpage/EnemyCounter] = $Statpage/EnemyCounter.text
 	
 	baseTexts[$Statpage/EnemyCounter] = $Statpage/EnemyCounter.text
+	baseTexts[$Statpage/EnemyAsteroidCounter] = $Statpage/EnemyAsteroidCounter.text
 	
 	InitState(gm.currentState)
 	
@@ -57,8 +58,24 @@ func InitState(state):
 		distanceText = distanceText.replace("DIST", str(int(player.distanceTravelled)))
 		distanceText = distanceText.replace("MAX", str(int(maxDistance)))
 		$DeathGUI/MaxDeathDistance.text = distanceText
-		var count = str(player.currentAsteroidsDestroyed)
-		$DeathGUI/AsteroidsCounter.text = count
+		var count = player.currentAsteroidsDestroyed
+		
+		#Update this life's kill count
+		$DeathGUI/AsteroidsCounter.text = str(count)
+		var best = gm.GetDataItem("BestAsteroidKills")
+		if count > best:
+			gm.UpdateDataItem("BestAsteroidKills", count, false)
+			$DeathGUI/NewBestAsteroids.visible = true
+		else:
+			$DeathGUI/NewBestAsteroids.visible = false
+		count = player.currentEnemiesDestroyed
+		best = gm.GetDataItem("BestEnemyKills")
+		$DeathGUI/EnemyCount.text = str(count)
+		if count > best:
+			gm.UpdateDataItem("BestEnemyKills", count, false)
+			$DeathGUI/NewBestEnemies.visible = true
+		else:
+			$DeathGUI/NewBestEnemies.visible = false
 		$PlayPause.visible = false
 	if (state == gm.States.Pause):
 		$PlayPause/PlayPauseParent/Sprite.texture = playPauseButtons[1]
@@ -142,6 +159,9 @@ func _on_toggle_stats():
 		text = baseTexts[$Statpage/EnemyCounter]
 		text = text.replace("0", gm.GetDataItem("LifetimeShipsKilled"))
 		$Statpage/EnemyCounter.text = text
+		text = baseTexts[$Statpage/EnemyAsteroidCounter]
+		text = text.replace("0", gm.GetDataItem("AsteroidsDestroyedByEnemy"))
+		$Statpage/EnemyAsteroidCounter.text = text
 	else:
 		_close_stats()
 	if gm.currentState == gm.States.Pause:

@@ -2,6 +2,7 @@ extends Sprite
 
 var player
 export (float) var MoveSpeed = 15
+var gm
 
 
 # Called when the node enters the scene tree for the first time.
@@ -22,4 +23,6 @@ func _on_BoltCollider_area_entered(area):
 		self.queue_free()
 	if "Asteroid" in area.name:
 		area.Die()
+		gm.UpdateDataItem("AsteroidsDestroyedByEnemy", 1)
+		print("Enemy blew up asteroid")
 

@@ -54,13 +54,19 @@ func _on_Area2D_area_entered(area):
 	if hit == true:
 		return
 	if "AsteroidPrefab" in area.name:
+		if area.destroyedBy == "" and "Enemy" in firedBy:
+			gm.UpdateDataItem("AsteroidsDestroyedByEnemy", 1)
+			print("Enemy blew up asteroid")
+		area.destroyedBy = firedBy
 		area.Die()
+		
 		if "Player" in firedBy:
 			player.currentAsteroidsDestroyed += 1
-			
-			#gm.gamedata["asteroidsDestroyed"] += 1
+		
+
 	elif "Enemy" in area.name and ("Enemy" in firedBy) == false:
 		area.get_node("..").Die()
+		player.currentEnemiesDestroyed += 1
 	if "Player" in area.name and "Enemy" in firedBy:
 		area.Die()
 	hit = true
